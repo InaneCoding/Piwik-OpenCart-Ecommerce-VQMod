@@ -1,0 +1,76 @@
+<modification>
+	<id><![CDATA[InaneCoding Piwik OpenCart mod v0.1 (pre-release)]]></id>
+	<version><![CDATA[0.1]]></version>
+	<vqmver><![CDATA[2.1.6]]></vqmver>
+	<author><![CDATA[Kevin Bibby / Inanecoding.co.uk]]></author>
+	<file name="catalog/controller/common/footer.php">
+		<operation>
+			<search position="before" offset="1"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template')]]></search>
+			<add><![CDATA[
+		// BOF - Piwik Opencart mod
+		$this->load->model('tool/piwik');
+		$this->data['piwik_footer_text'] = $this->model_tool_piwik->getFooterText();
+		// EOF - Piwik Opencart mod
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/default/template/common/footer.tpl">
+		<operation>
+			<search position="before" offset="1"><![CDATA[</body>]]></search>
+			<add><![CDATA[
+<?php echo $piwik_footer_text; ?>
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/module/cart.php">
+		<operation>
+			<search position="after" offset="0"><![CDATA[$this->cart->remove(]]></search>
+			<add><![CDATA[
+		// BOF - Piwik Opencart mod
+		$this->load->model('tool/piwik');
+		$this->model_tool_piwik->trackEcommerceCartUpdate();
+		// EOF - Piwik Opencart mod
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/controller/checkout/cart.php">
+		<operation>
+			<search position="after" offset="0"><![CDATA[$this->cart->remove(]]></search>
+			<add><![CDATA[
+			// BOF - Piwik Opencart mod
+			$this->load->model('tool/piwik');
+			$this->model_tool_piwik->trackEcommerceCartUpdate();
+			// EOF - Piwik Opencart mod
+			]]></add>
+		</operation>
+		<operation>
+			<search position="after" offset="1"><![CDATA[$this->cart->update(]]></search>
+			<add><![CDATA[
+			// BOF - Piwik Opencart mod
+			$this->load->model('tool/piwik');
+			$this->model_tool_piwik->trackEcommerceCartUpdate();
+			// EOF - Piwik Opencart mod
+			]]></add>
+		</operation>
+		<operation>
+			<search position="after" offset="0"><![CDATA[$this->cart->add(]]></search>
+			<add><![CDATA[
+				// BOF - Piwik Opencart mod
+				$this->load->model('tool/piwik');
+				$this->model_tool_piwik->trackEcommerceCartUpdate();
+				// EOF - Piwik Opencart mod
+			]]></add>
+		</operation>
+	</file>
+	<file name="catalog/model/checkout/order.php">
+		<operation>
+			<search position="after" offset="3"><![CDATA[function confirm(]]></search>
+			<add><![CDATA[
+		// BOF - Piwik Opencart mod
+		$this->load->model('tool/piwik');
+		$this->model_tool_piwik->trackEcommerceOrder($order_id);
+		// EOF - Piwik Opencart mod
+			]]></add>
+		</operation>
+	</file>
+</modification>
