@@ -6,10 +6,10 @@ Author: Kevin Bibby / Inanecoding.co.uk
 
 License:	GNU General Public License (GPL) version 3
 
-Version: 0.1 (pre-release)
-Date: 2012-10-20
+Version: 0.2 (pre-release)
+Date: 2012-11-04
 
-Tested with Opencart 5.3.1 and VQmod 2.1.6 only.
+Tested with Opencart 5.4.1 and VQmod 2.1.7 only.
 (may work with others, may not - try it and let me know!)
 
 */
@@ -46,9 +46,7 @@ class ModelToolPiwik extends Model {
 		$this->t->setTokenAuth( $this->piwik_token_auth);
 		
 		// Get the visitor ID and store it in the session data for use later
-		if (!isset($this->session->data['piwik_visitorid'])) {
-			$this->session->data['piwik_visitorid'] = $this->t->getVisitorId();
-		}
+		$this->session->data['piwik_visitorid'] = $this->t->getVisitorId();
 		
 		$this->load->model('catalog/category');
 		$this->load->model('catalog/product');

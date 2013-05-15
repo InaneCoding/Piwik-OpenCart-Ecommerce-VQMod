@@ -1,6 +1,6 @@
 <modification>
-	<id><![CDATA[InaneCoding Piwik OpenCart mod v0.1 (pre-release)]]></id>
-	<version><![CDATA[0.1]]></version>
+	<id><![CDATA[InaneCoding Piwik OpenCart mod v0.2 (pre-release)]]></id>
+	<version><![CDATA[0.2]]></version>
 	<vqmver><![CDATA[2.1.6]]></vqmver>
 	<author><![CDATA[Kevin Bibby / Inanecoding.co.uk]]></author>
 	<file name="catalog/controller/common/footer.php">
