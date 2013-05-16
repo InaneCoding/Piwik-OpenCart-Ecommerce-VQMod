@@ -20,25 +20,38 @@ class ModelToolPiwik extends Model {
 	
 	/* Variables temporarily defined at the top (to develop into admin backend at a later date) */
 	/* ---------------------------------------------------------------------------------------- */
-	private $piwik_https_url = "https://www.example.com/piwik/";	// Your Piwik installation URL (https).
-	private $piwik_http_url = "http://www.example.com/piwik/";	// Your Piwik installation URL.
-	private $piwik_site_id = 1;						// The Site ID for your site in Piwik.
-	private $piwik_token_auth = "??...";		// Your Piwik auth token (from Piwik 'API' tab).
-	private $piwik_ec_tracking = True;	// True - to enable Ecommerce tracking.
+	private $piwik_https_url;	// Your Piwik installation URL (https).
+	private $piwik_http_url;	// Your Piwik installation URL.
+	private $piwik_site_id;	// The Site ID for your site in Piwik.
+	private $piwik_token_auth;		// Your Piwik auth token (from Piwik 'API' tab).
+	private $piwik_ec_tracking;	// True - to enable Ecommerce tracking.
 						// False for basic page tracking.
 						
-	private $piwik_use_sku = False;		// True - Report Piwik SKU from Opencart 'SKU'.
+	private $piwik_use_sku;		// True - Report Piwik SKU from Opencart 'SKU'.
 						// False - Report Piwik SKU from Opencart 'Model'.
 	
 	// The full path to the PiwikTracker.php file (MUST use for Ecommerce tracking to work - get from Piwik website).
-	private $piwik_tracker_loc = "/home/~user/public_html/piwik/PiwikTracker.php";
-	/* ---------------------------------------------------------------------------------------- */							
+	private $piwik_tracker_loc;
+	/* ---------------------------------------------------------------------------------------- */	
 	
 
 	// Function to set various things up
 	// Not 100% certain how / where to run this, so just blanket running before each big block of API code
 	// Called internally by trackEcommerceCartUpdate and trackEcommerceOrder
 	private function init() {
+		// Load config data
+		$this->load->model('setting/setting');
+				
+		$this->model_setting_setting->getSetting('piwik');		
+			
+		$this->piwik_http_url = $this->config->get('piwik_http_url');
+		$this->piwik_https_url = $this->config->get('piwik_https_url');
+		$this->piwik_tracker_loc = $this->config->get('piwik_tracker_location');
+		$this->piwik_site_id = $this->config->get('piwik_site_id');
+		$this->piwik_token_auth = $this->config->get('piwik_token_auth');
+		$this->piwik_ec_tracking = $this->config->get('piwik_ec_enable');
+		$this->piwik_use_sku = $this->config->get('piwik_use_sku');
+		
 		// -- Piwik Tracking API initialisation -- 
 		require_once $this->piwik_tracker_loc;		// Require Piwik PHP tracking API
 		
@@ -77,7 +90,7 @@ class ModelToolPiwik extends Model {
 			
 				// For each ID in the path...
 				foreach ($parts as $path_id) {
-					// Get the info for this category ID					
+					// Get the info for this category ID
 					// Uses function from the catalog/category model
 					$category_info = $this->model_catalog_category->getCategory($path_id);
 					
@@ -216,9 +229,9 @@ class ModelToolPiwik extends Model {
 				$this->t->setVisitorId($this->session->data['piwik_visitorid']);
 			}
 			
-		        $order_info = $this->model_account_order->getOrder($order_id);
-		        $order_info_products = $this->model_account_order->getOrderProducts($order_id);
-		        $order_info_totals = $this->model_account_order->getOrderTotals($order_id);
+			$order_info = $this->model_account_order->getOrder($order_id);
+			$order_info_products = $this->model_account_order->getOrderProducts($order_id);
+			$order_info_totals = $this->model_account_order->getOrderTotals($order_id);
 
 			// Add ecommerce items for each product in the order before tracking
 			foreach ($order_info_products as $order_product) {
