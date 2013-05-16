@@ -1,19 +1,5 @@
 <?php
 
-/*
-Title: InaneCoding Piwik OpenCart Ecommerce VQmod
-Author: Kevin Bibby / Inanecoding.co.uk
-
-License:	GNU General Public License (GPL) version 3
-
-Version: 0.2 (pre-release)
-Date: 2012-11-04
-
-Tested with Opencart 5.4.1 and VQmod 2.1.7 only.
-(may work with others, may not - try it and let me know!)
-
-*/
-
 class ModelToolPiwik extends Model {
 	// Used to store Piwik Tracker object (don't touch!)
 	private $t;

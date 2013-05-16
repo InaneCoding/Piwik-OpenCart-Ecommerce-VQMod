@@ -2,8 +2,8 @@
 InaneCoding Piwik OpenCart Ecommerce VQmod
 ------------------------------------------------------
 Author:		Kevin Bibby / InaneCoding.co.uk
-Version:	0.2
-Release Date:	2012-11-04
+Version:	0.3
+Release Date:	2013-05-16
 License:	GNU General Public License (GPL) version 3
 ------------------------------------------------------
 
@@ -44,7 +44,7 @@ Go to http://piwik.org/docs/tracking-api/ and look for the 'Click here to downlo
 
 LIMITATIONS
 -----------
-This is an early pre-release v0.2 and is not finished. It is functional at a basic level.
+This is an early pre-release and is not finished. It is functional at a basic level.
 
 1. There is no admin back-end. You MUST open the piwik.php file and customise your settings at the top of the file.
 
@@ -63,6 +63,10 @@ d). Replace the /home/~user/public_html/piwik/PiwikTracker.php with the location
 
 VERSION HISTORY
 ---------------
+
+v0.3 - 2013/05/16
+First release of admin backend feature
+Arranged source files in an opencart folder structure for easy uploading
 
 v0.2 - 2012/11/04
 Fixed a bug where the ecommerce action would sometimes not get attributed to the correct visitorID.
@@ -92,3 +96,9 @@ It would be great to hear of your experiences and what could be improved.
  - kevin@inanecoding.co.uk
 
 If you find the mod helpful donations are of course appreciated! Paypal to st@icpla.net :)
+
+
+
+WITH THANKS TO
+--------------
+Gordon Downie - for his brilliant code contribution to add an opencart admin backend.
