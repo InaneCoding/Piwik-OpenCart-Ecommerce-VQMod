@@ -1,10 +1,10 @@
 ------------------------------------------------------
 InaneCoding Piwik OpenCart Ecommerce VQmod
 ------------------------------------------------------
-Author:		Kevin Bibby / InaneCoding.co.uk
-Version:	0.3
+Author:			Kevin Bibby / InaneCoding.co.uk
+Version:		0.3
 Release Date:	2013-05-16
-License:	GNU General Public License (GPL) version 3
+License:		GNU General Public License (GPL) version 3
 ------------------------------------------------------
 
 
@@ -15,49 +15,41 @@ Implements Piwik Ecommerce tracking for Opencart;
 > Tracks Ecommerce product views (category views not yet implemented)
 > Tracks Ecommerce cart add/update/delete
 > Tracks Ecommerce orders
+> OpenCart admin backend for modifying settings.
+> Fully VQmod'ed up! Does NOT overwrite any core files.
 
 
 
-FILES
------
-piwik.php - Upload to your /catalog/model/tool/ directory.
-piwik.xml - Upload to your /vqmod/xml/ directory.
-
-Fully VQmod'ed up! Mod does NOT change any core files.
-READ everything below to finish the setup (more steps required).
+INSTALLATION
+------------
+1) Upload the contents of the 'Upload' directory to the root of your OpenCart site.
+2) Login to your OpenCart admin, go to the Extensions -> Modules page, and click 'Install' next to 'Piwik'.
+3) After install, click 'Edit' next to 'Piwik', and on the settings page enter the details about your site and Piwik installation.
+4) READ the 'Important' section below! (more steps required).
 
 
 
 IMPORTANT
 ---------
-1. Requires VQmod installed.
+1. Requires VQmod installed (Highly recommended - https://code.google.com/p/vqmod/ ).
 
 2. Requires Piwik installed.
 
-2. You must have the piwiktracker.php file in your Piwik directory
-Go to http://piwik.org/docs/tracking-api/ and look for the 'Click here to download the file PiwikTracker.php' link.
+2. The default install assumes that Piwik is installed to the '/piwik/' folder at the root of your OpenCartsite.
+If you have used a custom install path then please move the 'PiwikTracker.php' file from '/piwik/PiwikTracker.php' to your custom Piwik folder.
 
-3. Only tested on OpenCart 1.5.3.1 & 1.5.4.1, VQmod 2.1.6 & 2.1.7 , and Piwik 1.84 & 1.91
+3. The default install assumes that your OpenCart Admin directory is in the '/admin/' folder at the root of your OpenCart site.
+If you have used a custom Admin path then please place all files from '/upload/admin/' to your custom OpenCart Admin folder.
+
+4. Only tested on OpenCart 1.5.3.1 & 1.5.4.1, VQmod 2.1.6 & 2.1.7 , and Piwik 1.84 & 1.91
 (may well work on others - please tell me what you find out!)
 
 
 
 LIMITATIONS
 -----------
-This is an early pre-release and is not finished. It is functional at a basic level.
-
-1. There is no admin back-end. You MUST open the piwik.php file and customise your settings at the top of the file.
-
-a) Replace "https://yoursite.com/piwik/" and the "http://yoursite.com/piwik/" with your Piwik URL - be sure to leave the 's' in https on the first 	line and don't forget the trailing '/'. (without the ' in both cases)
-
-b) Replace the site ID with the Piwik ID for your website. To find this, login to your Piwik admin, go to 'Settings' and then click in the 'Websites' tab. Your site id is listed in the first column.
-
-c). Replace the ??.. with your Piwik auth code. To find this in your Piwik admin, go to 'API' and copy the series of characters in the blue box after &token_auth=. Do not include &token_auth in the auth code line.
-
-d). Replace the /home/~user/public_html/piwik/PiwikTracker.php with the location of your PiwikTracker.php file (you did remember to download it from Piwiks site, didn't you?). In most cases this just requires replacing '~user' with your hosting username. You can often work out this location by looking at the directory structure when logged in via FTP, or if using CPanel, by looking at the directory path in the file manager.
-
-
-2. There is no functionality (yet) to report/track the category during page views / cart updates / orders. This will be added in a later version.
+This is an early pre-release and is functional, but still needs the finishing touches. Please report any bugs found.
+1) There is no functionality (yet) to report/track the category during page views / cart updates / orders. This will be added in a later version.
 
 
 
@@ -65,12 +57,13 @@ VERSION HISTORY
 ---------------
 
 v0.3 - 2013/05/16
-First release of admin backend feature
-Arranged source files in an opencart folder structure for easy uploading
+First release of admin backend feature.
+Arranged source files in an opencart folder structure for easy uploading.
+PiwikTracker.php file now included for easier install.
 
 v0.2 - 2012/11/04
 Fixed a bug where the ecommerce action would sometimes not get attributed to the correct visitorID.
-Improved Installation Instructions
+Improved Installation Instructions.
 
 v0.1 - 2012/10/20
 First pre-release version.
@@ -101,4 +94,4 @@ If you find the mod helpful donations are of course appreciated! Paypal to st@ic
 
 WITH THANKS TO
 --------------
-Gordon Downie - for his brilliant code contribution to add an opencart admin backend.
+Gordon Downie - for his brilliant code contribution to add the opencart admin backend.
