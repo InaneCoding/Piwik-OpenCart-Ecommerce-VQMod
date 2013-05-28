@@ -4,7 +4,7 @@ InaneCoding Piwik OpenCart Ecommerce VQmod
 Source Repository:	https://github.com/InaneCoding/Piwik-OpenCart-Ecommerce-VQMod
 Author:			Kevin Bibby / InaneCoding.co.uk
 Version:		0.3
-Release Date:		2013-05-22
+Release Date:		2013-05-28
 License:		GNU General Public License (GPL) version 3
 ------------------------------------------------------
 
@@ -25,15 +25,16 @@ INSTALLATION
 ------------
 1) Upload the contents of the 'Upload' directory to the root of your OpenCart site.
 2) Login to your OpenCart admin, go to the Extensions -> Modules page, and click 'Install' next to 'Piwik'.
-3) After install, click 'Edit' next to 'Piwik', and on the settings page enter the details about your site and Piwik installation;
-	a) "Piwik installation URL" - This is the full url to your Piwik installation (including 'http://'). e.g. "http://www.example.com/piwik/". This MUST include the trailing '/' on the end!
-	b) "Piwik installation URL (https)" - Same as above, but for secure https. e.g. "https://www.example.com/piwik/". This MUST include the trailing '/' on the end!
-	c) "Full path to the PiwikTracker.php file" - As the name says, this is your server filepath to your PiwikTracker.php file in your Piwik folder - commonly this will be "/home/~user/public_html/piwik/PiwikTracker.php", where '~user' is replaced by your website hosting username. However this can vary depending on the server configuration.
-	d) "Piwik auth token" - This is your secret Piwik authorisation token. Get this from the 'API' tab on your Piwik admin panel.
-	e) "Piwik Site ID" - This is the ID used in your Piwik install for the site you want to track, usually this is '1' but can vary if you have multiple sites or a custom setup. Consult the 'Website Management' page on your Piwik admin panel for this setting (under Settings -> Websites).
-	f) "Ecommerce tracking" - Set this to 'Enabled' to allow tracking of Ecommerce actions such as product views, cart operations and orders. Set this to 'Disabled' if you only wish to track regular page views.
-	g) "Piwik SKU" - Select what product field you would like to use when reporting the SKU (Stock Keeping Unit) in an Ecommerce operation. This can use either OpenCarts 'Model' product field, or the 'SKU' product field.
-	h) "Piwik Tracking" - Global 'Enabled' / 'Disabled' setting for the Piwik OpenCart mod (functionality not yet implemented!).
+3) After install, click 'Edit' next to 'Piwik', and on the settings page enter the details about your site and the Piwik installation;
+
+a) "Piwik installation URL" - This is the full url to your Piwik installation (including 'http://'). e.g. "http://www.example.com/piwik/". This MUST include the trailing '/' on the end!
+b) "Piwik installation URL (https)" - Same as above, but for secure https. e.g. "https://www.example.com/piwik/". This MUST include the trailing '/' on the end!
+c) "Full path to the PiwikTracker.php file" - As the name says, this is your server filepath to your PiwikTracker.php file in your Piwik folder - commonly this will be "/home/~user/public_html/piwik/PiwikTracker.php", where '~user' is replaced by your website hosting username. However this can vary depending on the server configuration.
+d) "Piwik auth token" - This is your secret Piwik authorisation token. Get this from the 'API' tab on your Piwik admin panel.
+e) "Piwik Site ID" - This is the ID used in your Piwik install for the site you want to track, usually this is '1' but can vary if you have multiple sites or a custom setup. Consult the 'Website Management' page on your Piwik admin panel for this setting (under Settings -> Websites).
+f) "Ecommerce tracking" - Set this to 'Enabled' to allow tracking of Ecommerce actions such as product views, cart operations and orders. Set this to 'Disabled' if you only wish to track regular page views.
+g) "Piwik SKU" - Select what product field you would like to use when reporting the SKU (Stock Keeping Unit) in an Ecommerce operation. This can use either OpenCarts 'Model' product field, or the 'SKU' product field.
+h) "Piwik Tracking" - Global 'Enabled' / 'Disabled' setting for the Piwik OpenCart mod (functionality not yet implemented!).
 
 
 
@@ -56,7 +57,7 @@ If you have used a custom Admin path then please place all files from '/upload/a
 
 LIMITATIONS
 -----------
-This is an early pre-release and is functional, but still needs further finishing touches and testing. Please report any bugs found!
+This is an early release and is functional, but still needs further finishing touches and testing. Please report any bugs found!
 1) There is no functionality (yet) to track the category during page views / cart updates / orders.
 2) The "Piwik Tracking" global enable/disable setting on the mod settings page is not yet functional.
 
@@ -65,7 +66,7 @@ This is an early pre-release and is functional, but still needs further finishin
 VERSION HISTORY
 ---------------
 
-v0.3 - 2013/05/22
+v0.3 - 2013/05/28
 First release of admin backend feature.
 Arranged source files in an opencart folder structure for easy uploading.
 PiwikTracker.php file now included for easier install.
