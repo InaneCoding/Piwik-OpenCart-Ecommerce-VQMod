@@ -25,6 +25,7 @@ class ControllerModulePiwik extends Controller {
 		$this->data['entry_token_auth'] = $this->language->get('entry_token_auth');
 		$this->data['entry_site_id'] = $this->language->get('entry_site_id');
 		$this->data['entry_ec_enable'] = $this->language->get('entry_ec_enable');
+		$this->data['entry_proxy_enable'] = $this->language->get('entry_proxy_enable');		
 		$this->data['entry_use_sku'] = $this->language->get('entry_use_sku');
 		$this->data['entry_enable'] = $this->language->get('entry_enable');
 		
@@ -132,6 +133,12 @@ class ControllerModulePiwik extends Controller {
 			$this->data['piwik_ec_enable'] = $this->request->post['piwik_ec_enable'];
 		} else {
 			$this->data['piwik_ec_enable'] = $this->config->get('piwik_ec_enable');
+		}
+		
+		if (isset($this->request->post['piwik_proxy_enable'])) {
+			$this->data['piwik_proxy_enable'] = $this->request->post['piwik_proxy_enable'];
+		} else {
+			$this->data['piwik_proxy_enable'] = $this->config->get('piwik_proxy_enable');
 		}	
 		
 		if (isset($this->request->post['piwik_use_sku'])) {

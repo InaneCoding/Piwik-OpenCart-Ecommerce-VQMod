@@ -10,14 +10,17 @@ class ModelToolPiwik extends Model {
 	private $piwik_http_url;	// Your Piwik installation URL.
 	private $piwik_site_id;	// The Site ID for your site in Piwik.
 	private $piwik_token_auth;		// Your Piwik auth token (from Piwik 'API' tab).
-	private $piwik_ec_tracking;	// True - to enable Ecommerce tracking.
+	private $piwik_ec_enable;	// True - to enable Ecommerce tracking.
 						// False for basic page tracking.
 						
 	private $piwik_use_sku;		// True - Report Piwik SKU from Opencart 'SKU'.
 						// False - Report Piwik SKU from Opencart 'Model'.
+						
+	private $piwik_proxy_enable;		// True - to enable the use of the piwik proxy script to hide trhe piwik URL.
+					// False - for regular Piwik tracking.
 	
 	// The full path to the PiwikTracker.php file (MUST use for Ecommerce tracking to work - get from Piwik website).
-	private $piwik_tracker_loc;
+	private $piwik_tracker_location;
 	/* ---------------------------------------------------------------------------------------- */	
 	
 
@@ -32,14 +35,15 @@ class ModelToolPiwik extends Model {
 			
 		$this->piwik_http_url = $this->config->get('piwik_http_url');
 		$this->piwik_https_url = $this->config->get('piwik_https_url');
-		$this->piwik_tracker_loc = $this->config->get('piwik_tracker_location');
+		$this->piwik_tracker_location = $this->config->get('piwik_tracker_location');
 		$this->piwik_site_id = $this->config->get('piwik_site_id');
 		$this->piwik_token_auth = $this->config->get('piwik_token_auth');
-		$this->piwik_ec_tracking = $this->config->get('piwik_ec_enable');
+		$this->piwik_ec_enable = $this->config->get('piwik_ec_enable');
+		$this->piwik_proxy_enable = $this->config->get('piwik_proxy_enable');
 		$this->piwik_use_sku = $this->config->get('piwik_use_sku');
 		
 		// -- Piwik Tracking API initialisation -- 
-		require_once $this->piwik_tracker_loc;		// Require Piwik PHP tracking API
+		require_once $this->piwik_tracker_location;		// Require Piwik PHP tracking API
 		
 		$this->t = new PiwikTracker( $this->piwik_site_id, $this->piwik_http_url);
 		$this->t->setTokenAuth( $this->piwik_token_auth);
@@ -59,7 +63,7 @@ class ModelToolPiwik extends Model {
 	// Other ecommerce actions not on every page use PHP API.
 	// Private as this is called internally to this class by getFooterText()
 	private function setEcommerceView() {				
-		if ($this->piwik_ec_tracking) {	
+		if ($this->piwik_ec_enable) {	
 			/* Get the Category info */
 			// First, check the GET variable 'path' is set
 			// Set to false - category reporting not fully supported in this version
@@ -148,7 +152,7 @@ class ModelToolPiwik extends Model {
 		
 		$this->init();
 		
-		if ($this->piwik_ec_tracking) {	
+		if ($this->piwik_ec_enable) {	
 			// If the visitors piwik ID has been stored in the session data,
 			// Then use this info to force the visitor ID used for the piwik API call.
 			if (isset($this->session->data['piwik_visitorid'])) {
@@ -207,7 +211,7 @@ class ModelToolPiwik extends Model {
 	
 		$this->init();
 				
-		if ($this->piwik_ec_tracking) {
+		if ($this->piwik_ec_enable) {
 			// If the visitors piwik ID has been stored in the session data,
 			// Then use this info to force the visitor ID used for the piwik API call.
 			if (isset($this->session->data['piwik_visitorid'])) {
@@ -296,27 +300,37 @@ class ModelToolPiwik extends Model {
 	public function getFooterText() {
 		
 		$this->init();
-				
-		$piwik_footer = '<!-- Piwik -->' . 
-				'<script type="text/javascript">' .
-				'var pkBaseURL = (("https:" == document.location.protocol) ? "' .
-				$this->piwik_https_url . '" : "' . $this->piwik_http_url . '");' .
-				'document.write(unescape("%3Cscript src=\'" + pkBaseURL + "piwik.js\'' .
-				'type=\'text/javascript\'%3E%3C/script%3E"));' .
-				'</script><script type="text/javascript">' .
-				'try {' .
-				'var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ' .
-				(int)$this->piwik_site_id . ');' . "\n";
-
-		$piwik_footer .= $this->setEcommerceView();
-
-		$piwik_footer .= 'piwikTracker.trackPageView();' .
-				'piwikTracker.enableLinkTracking();' .
-				'} catch( err ) {}' .
-				'</script><noscript><p><img src="' . $this->piwik_http_url .
-				'piwik.php?idsite=' . (int)$this->piwik_site_id .
-				'" style="border:0" alt="" /></p></noscript>' . "\n" .
-				'<!-- End Piwik Tracking Code -->';
+		
+		if ($this->piwik_proxy_enable) {
+			// Use Piwik proxy script to hide actual piwik URL.
+			
+			/* TO DO - put piwik footer text for proxy here
+			https://github.com/piwik/piwik/tree/master/misc/proxy-hide-piwik-url#piwik-proxy-hide-url	
+			*/
+							
+		} else {
+			// Regular tracking
+			$piwik_footer = '<!-- Piwik -->' . 
+					'<script type="text/javascript">' .
+					'var pkBaseURL = (("https:" == document.location.protocol) ? "' .
+					$this->piwik_https_url . '" : "' . $this->piwik_http_url . '");' .
+					'document.write(unescape("%3Cscript src=\'" + pkBaseURL + "piwik.js\'' .
+					'type=\'text/javascript\'%3E%3C/script%3E"));' .
+					'</script><script type="text/javascript">' .
+					'try {' .
+					'var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ' .
+					(int)$this->piwik_site_id . ');' . "\n";
+	
+			$piwik_footer .= $this->setEcommerceView();
+	
+			$piwik_footer .= 'piwikTracker.trackPageView();' .
+					'piwikTracker.enableLinkTracking();' .
+					'} catch( err ) {}' .
+					'</script><noscript><p><img src="' . $this->piwik_http_url .
+					'piwik.php?idsite=' . (int)$this->piwik_site_id .
+					'" style="border:0" alt="" /></p></noscript>' . "\n" .
+					'<!-- End Piwik Tracking Code -->';
+		}
 
 		return $piwik_footer;
 	}
