@@ -132,11 +132,11 @@ class ModelToolPiwik extends Model {
 			}
 			
 			// Return the javascript text to insert into footer	
-			return 'piwikTracker.setEcommerceView(' .
+			return '_paq.push(["setEcommerceView",' .
 						$piwik_model . ',' .
 						$piwik_product . ',' .
 						$piwik_category . ',' .
-						$piwik_price . ');' . "\n";
+						$piwik_price . ']);' . "\n";
 		} else {
 			// Ecommerce tracking turned off - return blank string
 			return '';
@@ -301,35 +301,39 @@ class ModelToolPiwik extends Model {
 		
 		$this->init();
 		
+		$piwik_footer = '<!-- Piwik -->' . 
+				'<script type="text/javascript">' .
+				'var _paq = _paq || [];' . "\n";
+		
+		$piwik_footer .= $this->setEcommerceView();
+				
+		$piwik_footer .= '_paq.push(["trackPageView"]);' .
+				'_paq.push(["enableLinkTracking"]);' . "\n";
+		
 		if ($this->piwik_proxy_enable) {
 			// Use Piwik proxy script to hide actual piwik URL.
-			
-			/* TO DO - put piwik footer text for proxy here
-			https://github.com/piwik/piwik/tree/master/misc/proxy-hide-piwik-url#piwik-proxy-hide-url	
-			*/
-							
+			$piwik_footer .= '(function() {' .
+					'var u=(("https:" == document.location.protocol) ? "' .
+					HTTPS_SERVER . '" : "' . HTTP_SERVER . '");' .
+					'_paq.push(["setTrackerUrl", u+"piwik-proxy.php"]);' .
+					'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
+					'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
+					'g.defer=true; g.async=true; g.src=u+"piwik-proxy.php"; s.parentNode.insertBefore(g,s);' .
+					'})();' .
+					'</script>' .
+					'<!-- End Piwik Code -->';
 		} else {
 			// Regular tracking
-			$piwik_footer = '<!-- Piwik -->' . 
-					'<script type="text/javascript">' .
-					'var pkBaseURL = (("https:" == document.location.protocol) ? "' .
+			$piwik_footer .= '(function() {' .
+					'var u=(("https:" == document.location.protocol) ? "' .
 					$this->piwik_https_url . '" : "' . $this->piwik_http_url . '");' .
-					'document.write(unescape("%3Cscript src=\'" + pkBaseURL + "piwik.js\'' .
-					'type=\'text/javascript\'%3E%3C/script%3E"));' .
-					'</script><script type="text/javascript">' .
-					'try {' .
-					'var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ' .
-					(int)$this->piwik_site_id . ');' . "\n";
-	
-			$piwik_footer .= $this->setEcommerceView();
-	
-			$piwik_footer .= 'piwikTracker.trackPageView();' .
-					'piwikTracker.enableLinkTracking();' .
-					'} catch( err ) {}' .
-					'</script><noscript><p><img src="' . $this->piwik_http_url .
-					'piwik.php?idsite=' . (int)$this->piwik_site_id .
-					'" style="border:0" alt="" /></p></noscript>' . "\n" .
-					'<!-- End Piwik Tracking Code -->';
+					'_paq.push(["setTrackerUrl", u+"piwik.php"]);' .
+					'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
+					'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
+					'g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);' .
+					'})();' .
+					'</script>' .
+					'<!-- End Piwik Code -->';
 		}
 
 		return $piwik_footer;
