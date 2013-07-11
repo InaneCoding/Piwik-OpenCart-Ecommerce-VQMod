@@ -11,6 +11,15 @@ class ControllerModulePiwik extends Controller {
 				
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->model_setting_setting->editSetting('piwik', $this->request->post);		
+			
+			//Write the settings to the piwik-proxy file
+			$path_to_file = implode("/",explode("/", DIR_APPLICATION, -2)) . "/piwik-proxy.php";
+			if (file_exists($path_to_file)) {
+				$file_contents = file_get_contents($path_to_file);
+				$file_contents = preg_replace('/\$PIWIK_URL = \'.{1,512}?\';/', '$PIWIK_URL = \'' . $this->request->post['piwik_http_url'] . '\';', $file_contents, 1);
+				$file_contents = preg_replace('/\$TOKEN_AUTH = \'[a-z0-9]{1,32}\';/', '$TOKEN_AUTH = \'' . $this->request->post['piwik_token_auth'] . '\';', $file_contents, 1);
+				file_put_contents($path_to_file,$file_contents);
+			}
 					
 			$this->session->data['success'] = $this->language->get('text_success');
 						
