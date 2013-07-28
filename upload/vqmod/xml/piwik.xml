@@ -14,7 +14,7 @@
 			]]></add>
 		</operation>
 	</file>
-	<file name="catalog/view/theme/default/template/common/footer.tpl">
+	<file name="catalog/view/theme/*/template/common/footer.tpl">
 		<operation>
 			<search position="before" offset="1"><![CDATA[</body>]]></search>
 			<add><![CDATA[
