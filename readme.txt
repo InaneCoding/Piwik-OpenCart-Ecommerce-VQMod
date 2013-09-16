@@ -2,10 +2,10 @@
 InaneCoding Piwik OpenCart Ecommerce VQmod
 ------------------------------------------------------
 Source Repository:	https://github.com/InaneCoding/Piwik-OpenCart-Ecommerce-VQMod
-Author:			Kevin Bibby / InaneCoding.co.uk
-Version:		0.3
-Release Date:		2013-05-28
-License:		GNU General Public License (GPL) version 3
+Author:				Kevin Bibby / InaneCoding.co.uk
+Version:			0.4
+Release Date:		2013-09-16
+License:			GNU General Public License (GPL) version 3
 ------------------------------------------------------
 
 
@@ -17,6 +17,7 @@ Implements Piwik Ecommerce tracking for OpenCart;
 > Tracks Ecommerce cart add/update/delete
 > Tracks Ecommerce orders
 OpenCart admin backend for modifying settings.
+Option to use Piwik Proxy Hide Url script to obfuscate the URL in the javascript code.
 Fully VQmod'ed up! Does NOT overwrite any core files.
 
 
@@ -33,9 +34,16 @@ c) "Full path to the PiwikTracker.php file" - As the name says, this is your ser
 d) "Piwik auth token" - This is your secret Piwik authorisation token. Get this from the 'API' tab on your Piwik admin panel.
 e) "Piwik Site ID" - This is the ID used in your Piwik install for the site you want to track, usually this is '1' but can vary if you have multiple sites or a custom setup. Consult the 'Website Management' page on your Piwik admin panel for this setting (under Settings -> Websites).
 f) "Ecommerce tracking" - Set this to 'Enabled' to allow tracking of Ecommerce actions such as product views, cart operations and orders. Set this to 'Disabled' if you only wish to track regular page views.
-g) "Piwik SKU" - Select what product field you would like to use when reporting the SKU (Stock Keeping Unit) in an Ecommerce operation. This can use either OpenCarts 'Model' product field, or the 'SKU' product field.
-h) "Piwik Tracking" - Global 'Enabled' / 'Disabled' setting for the Piwik OpenCart mod (functionality not yet implemented!).
+g) "Piwik Proxy Script" - Set this to 'Enabled' to route all Piwik tracking requests through the Piwik Proxy script at the root of your site; useful if the "Piwik Installation URL" is at another URL/server which you don't want to make public.
+h) "Piwik SKU" - Select what product field you would like to use when reporting the SKU (Stock Keeping Unit) in an Ecommerce operation. This can use either OpenCarts 'Model' product field, or the 'SKU' product field.
+i) "Piwik Tracking" - Global 'Enabled' / 'Disabled' setting for the Piwik OpenCart mod (functionality not yet implemented!).
 
+
+UPGRADE
+-------
+To upgrade from a previous version simply upload the files from the new version as described in step 1) of the installation.
+There should be no need to re-install anything or change any settings as I've tried to pay attention to backwards compatbility during development.
+Please get in touch if you experience any issues.
 
 
 IMPORTANT
@@ -57,7 +65,7 @@ If you have used a custom Admin path then please place all files from '/upload/a
 
 LIMITATIONS
 -----------
-This is an early release and is functional, but still needs further finishing touches and testing. Please report any bugs found!
+This is functional but by no means a final release and would still benefit from further testing. Please report any bugs found!
 1) There is no functionality (yet) to track the category during page views / cart updates / orders.
 2) The "Piwik Tracking" global enable/disable setting on the mod settings page is not yet functional.
 
@@ -65,6 +73,11 @@ This is an early release and is functional, but still needs further finishing to
 
 VERSION HISTORY
 ---------------
+
+v0.4 - 2013/09/16
+Fixed bug 'HTTP_REFERRER' undefined index error.
+Added option to use Piwik Proxy Hide Url script to obfuscate the URL in the javascript code.
+Modified VQmod XML file so will now play nicely with custom themes.
 
 v0.3 - 2013/05/28
 First release of admin backend feature.
@@ -85,9 +98,7 @@ No admin back-end
 
 KNOWN BUGS
 ----------
-There is a bug with PiwikTracker.php and OpenCart due to 'HTTP_REFERRER' being used without checking if it is defined or not. This code has an '@' symbol to suppress the error but for some reason this doesn't always work.
-The symptom is text at the top of your site which is similar to "Notice: Undefined index: HTTP_REFERER in ????/PiwikTracker.php on line 84".
-To turn off the display of the error on your site, go to your opencart admin. Go to System > Settings , click 'edit' by your site, then click the 'Server' tab. At the bottom change "Display Errors:" from 'yes' to 'no'. That will stop it displaying.
+No known bugs.
 
 
 
