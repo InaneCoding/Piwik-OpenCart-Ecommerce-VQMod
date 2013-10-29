@@ -5,7 +5,7 @@
 	<author><![CDATA[Kevin Bibby / Inanecoding.co.uk]]></author>
 	<file name="catalog/controller/common/footer.php">
 		<operation>
-			<search position="before" offset="1"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template')]]></search>
+			<search position="before" offset="1"><![CDATA[$this->render(]]></search>
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
 		$this->load->model('tool/piwik');
