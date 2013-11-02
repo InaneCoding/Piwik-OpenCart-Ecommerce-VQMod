@@ -62,13 +62,17 @@
 			]]></add>
 		</operation>
 	</file>
-	<file name="catalog/model/checkout/order.php">
+	<file name="catalog/controller/checkout/success.php">
 		<operation>
-			<search position="after" offset="3"><![CDATA[function confirm(]]></search>
+			<search position="after"><![CDATA[function index() {]]></search>
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
-		$this->load->model('tool/piwik');
-		$this->model_tool_piwik->trackEcommerceOrder($order_id);
+		if ( isset($this->session->data['order_id']) && ( ! empty($this->session->data['order_id']))  ) {
+			$this->session->data['last_order_id'] = $this->session->data['order_id'];
+			
+			$this->load->model('tool/piwik');
+			$this->model_tool_piwik->trackEcommerceOrder($this->session->data['last_order_id']);
+		}
 		// EOF - Piwik Opencart mod
 			]]></add>
 		</operation>
