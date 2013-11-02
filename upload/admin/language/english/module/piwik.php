@@ -1,10 +1,10 @@
 <?php
 // Heading
-$_['heading_title']       = 'Piwik';
+$_['heading_title']       = 'Piwik OpenCart Ecommerce mod';
 
 // Text
 $_['text_module']         = 'Modules';
-$_['text_success']        = 'Success: You have modified module Piwik!';
+$_['text_success']        = 'Success: You have modified the Piwik OpenCart Ecommerce module!';
 
 $_['text_sku_sku'] = 'Opencart \'SKU\'';
 $_['text_sku_model'] = 'Opencart \'Model\'';
@@ -20,7 +20,7 @@ $_['entry_use_sku'] = 'Piwik SKU:<br /><span class="help">Choose which OpenCart 
 $_['entry_enable'] = 'Piwik Tracking:<br /><span class="help">Global enable/disable setting for the mod.</span>';
 
 // Error
-$_['error_permission'] = 'Warning: You do not have permission to modify module Piwik!';
+$_['error_permission'] = 'Warning: You do not have permission to modify the Piwik OpenCart Ecommerce module!';
 $_['error_url'] = 'URL Required';
 $_['error_location'] = 'Location Required';
 $_['error_token'] = 'Invalid Token';
