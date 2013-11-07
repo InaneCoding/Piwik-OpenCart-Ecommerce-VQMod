@@ -62,6 +62,18 @@
 						</td>
 					</tr>
 					<tr>
+						<td><?php echo $entry_enable; ?></td>
+						<td><select name="piwik_enable">
+							<?php if ($piwik_enable) { ?>
+								<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+								<option value="0"><?php echo $text_disabled; ?></option>
+							<?php } else { ?>
+								<option value="1"><?php echo $text_enabled; ?></option>
+								<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+							<?php } ?>
+						</select></td>
+					</tr>
+					<tr>
 						<td><?php echo $entry_ec_enable; ?></td>
 						<td><select name="piwik_ec_enable">
 							<?php if ($piwik_ec_enable) { ?>
@@ -94,18 +106,6 @@
 							<?php } else { ?>
 								<option value="1"><?php echo $text_sku_sku; ?></option>
 								<option value="0" selected="selected"><?php echo $text_sku_model; ?></option>
-							<?php } ?>
-						</select></td>
-					</tr>
-					<tr>
-						<td><?php echo $entry_enable; ?></td>
-						<td><select name="piwik_enable">
-							<?php if ($piwik_enable) { ?>
-								<option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-								<option value="0"><?php echo $text_disabled; ?></option>
-							<?php } else { ?>
-								<option value="1"><?php echo $text_enabled; ?></option>
-								<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
 							<?php } ?>
 						</select></td>
 					</tr>

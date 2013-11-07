@@ -41,6 +41,7 @@ class ModelToolPiwik extends Model {
 		$this->piwik_ec_enable = $this->config->get('piwik_ec_enable');
 		$this->piwik_proxy_enable = $this->config->get('piwik_proxy_enable');
 		$this->piwik_use_sku = $this->config->get('piwik_use_sku');
+		$this->piwik_enable = $this->config->get('piwik_enable');		
 		
 		// -- Piwik Tracking API initialisation -- 
 		require_once $this->piwik_tracker_location;		// Require Piwik PHP tracking API
@@ -62,85 +63,80 @@ class ModelToolPiwik extends Model {
 	// (to be inserted in javascript footer as it occurs on every page)
 	// Other ecommerce actions not on every page use PHP API.
 	// Private as this is called internally to this class by getFooterText()
-	private function setEcommerceView() {				
-		if ($this->piwik_ec_enable) {	
-			/* Get the Category info */
-			// First, check the GET variable 'path' is set
-			// Set to false - category reporting not fully supported in this version
-			if (false) {
-				//Initialise variables etc
-				$piwik_category = '';
-			
-				// Split the path variable into its ID parts
-				// Path variable is format of 'x' for a top category,
-				// format 'x_x' for a second-level category,
-				// format 'x_x_x' for a third level, etc.
-				// Each 'x' is the ID of the category at that level
-				$parts = explode('_', (string)$this->request->get['path']);
-			
-				// For each ID in the path...
-				foreach ($parts as $path_id) {
-					// Get the info for this category ID
-					// Uses function from the catalog/category model
-					$category_info = $this->model_catalog_category->getCategory($path_id);
-					
-					if ($category_info) {
-						if (!$piwik_category) {
-							// First item in category list
-							// Set start of string up for Javascript array
-							// Then add name of category
-							$piwik_category = '"' . $category_info['name'];
-						} else {
-							// Somewhere in middle of category list
-							// Add name of category
-							$piwik_category .= ' > ' . $category_info['name'];
-						}
+	private function setEcommerceView() {
+		/* Get the Category info */
+		// First, check the GET variable 'path' is set
+		// Set to false - category reporting not fully supported in this version
+		if (false) {
+			//Initialise variables etc
+			$piwik_category = '';
+		
+			// Split the path variable into its ID parts
+			// Path variable is format of 'x' for a top category,
+			// format 'x_x' for a second-level category,
+			// format 'x_x_x' for a third level, etc.
+			// Each 'x' is the ID of the category at that level
+			$parts = explode('_', (string)$this->request->get['path']);
+		
+			// For each ID in the path...
+			foreach ($parts as $path_id) {
+				// Get the info for this category ID
+				// Uses function from the catalog/category model
+				$category_info = $this->model_catalog_category->getCategory($path_id);
+				
+				if ($category_info) {
+					if (!$piwik_category) {
+						// First item in category list
+						// Set start of string up for Javascript array
+						// Then add name of category
+						$piwik_category = '"' . $category_info['name'];
+					} else {
+						// Somewhere in middle of category list
+						// Add name of category
+						$piwik_category .= ' > ' . $category_info['name'];
 					}
 				}
-				// Finish off the end text for the Javascript string
-				$piwik_category .= '"';	
-			} else {
-				// If there is no 'path' GET variable, then we are not in a category
-				// So set the appropriate 'false' text to use (see piwik JavaScript function)
-				$piwik_category = "categoryName = false";
 			}
-	
-	
-			/* Get the Product info */
-			if (isset($this->request->get['product_id'])) {
-				// Read the product ID from the GET variable
-				$product_id = $this->request->get['product_id'];
-				
-				// Look up the product info using the product ID					
-				// Uses function from the catalog/product model
-				$product_info = $this->model_catalog_product->getProduct($product_id);
-				
-				// Get the individual pieces of info
-				if ($this->piwik_use_sku) {
-					$piwik_model = '"' . $product_info['sku'] . '"';
-				} else {
-					$piwik_model = '"' . $product_info['model'] . '"';
-				}
-				$piwik_product = '"' . $product_info['name'] . '"';
-				$piwik_price = (string)$product_info['price'];
-			} else {
-				// If there is no 'product_id' GET variable, then we are not in a product
-				// So set the appropriate 'false' text to use (see piwik JavaScript function)
-				$piwik_model = "productSKU = false";
-				$piwik_product = "productName = false";
-				$piwik_price = "price = false";
-			}
-			
-			// Return the javascript text to insert into footer	
-			return '_paq.push(["setEcommerceView",' .
-						$piwik_model . ',' .
-						$piwik_product . ',' .
-						$piwik_category . ',' .
-						$piwik_price . ']);' . "\n";
+			// Finish off the end text for the Javascript string
+			$piwik_category .= '"';	
 		} else {
-			// Ecommerce tracking turned off - return blank string
-			return '';
+			// If there is no 'path' GET variable, then we are not in a category
+			// So set the appropriate 'false' text to use (see piwik JavaScript function)
+			$piwik_category = "categoryName = false";
 		}
+
+
+		/* Get the Product info */
+		if (isset($this->request->get['product_id'])) {
+			// Read the product ID from the GET variable
+			$product_id = $this->request->get['product_id'];
+			
+			// Look up the product info using the product ID					
+			// Uses function from the catalog/product model
+			$product_info = $this->model_catalog_product->getProduct($product_id);
+			
+			// Get the individual pieces of info
+			if ($this->piwik_use_sku) {
+				$piwik_model = '"' . $product_info['sku'] . '"';
+			} else {
+				$piwik_model = '"' . $product_info['model'] . '"';
+			}
+			$piwik_product = '"' . $product_info['name'] . '"';
+			$piwik_price = (string)$product_info['price'];
+		} else {
+			// If there is no 'product_id' GET variable, then we are not in a product
+			// So set the appropriate 'false' text to use (see piwik JavaScript function)
+			$piwik_model = "productSKU = false";
+			$piwik_product = "productName = false";
+			$piwik_price = "price = false";
+		}
+		
+		// Return the javascript text to insert into footer	
+		return '_paq.push(["setEcommerceView",' .
+					$piwik_model . ',' .
+					$piwik_product . ',' .
+					$piwik_category . ',' .
+					$piwik_price . ']);' . "\n";
 	}
 	
 	
@@ -152,7 +148,7 @@ class ModelToolPiwik extends Model {
 		
 		$this->init();
 		
-		if ($this->piwik_ec_enable) {	
+		if ($this->piwik_ec_enable and $this->piwik_enable) {	
 			// If the visitors piwik ID has been stored in the session data,
 			// Then use this info to force the visitor ID used for the piwik API call.
 			if (isset($this->session->data['piwik_visitorid'])) {
@@ -211,7 +207,7 @@ class ModelToolPiwik extends Model {
 	
 		$this->init();
 				
-		if ($this->piwik_ec_enable) {
+		if ($this->piwik_ec_enable and $this->piwik_enable) {
 			// If the visitors piwik ID has been stored in the session data,
 			// Then use this info to force the visitor ID used for the piwik API call.
 			if (isset($this->session->data['piwik_visitorid'])) {
@@ -301,39 +297,45 @@ class ModelToolPiwik extends Model {
 		
 		$this->init();
 		
-		$piwik_footer = '<!-- Piwik -->' . 
-				'<script type="text/javascript">' .
-				'var _paq = _paq || [];' . "\n";
+		$piwik_footer = ' ';
 		
-		$piwik_footer .= $this->setEcommerceView();
-				
-		$piwik_footer .= '_paq.push(["trackPageView"]);' .
-				'_paq.push(["enableLinkTracking"]);' . "\n";
-		
-		if ($this->piwik_proxy_enable) {
-			// Use Piwik proxy script to hide actual piwik URL.
-			$piwik_footer .= '(function() {' .
-					'var u=(("https:" == document.location.protocol) ? "' .
-					HTTPS_SERVER . '" : "' . HTTP_SERVER . '");' .
-					'_paq.push(["setTrackerUrl", u+"piwik-proxy.php"]);' .
-					'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
-					'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
-					'g.defer=true; g.async=true; g.src=u+"piwik-proxy.php"; s.parentNode.insertBefore(g,s);' .
-					'})();' .
-					'</script>' .
-					'<!-- End Piwik Code -->';
-		} else {
-			// Regular tracking
-			$piwik_footer .= '(function() {' .
-					'var u=(("https:" == document.location.protocol) ? "' .
-					$this->piwik_https_url . '" : "' . $this->piwik_http_url . '");' .
-					'_paq.push(["setTrackerUrl", u+"piwik.php"]);' .
-					'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
-					'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
-					'g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);' .
-					'})();' .
-					'</script>' .
-					'<!-- End Piwik Code -->';
+		if ($this->piwik_enable) {
+			$piwik_footer .= '<!-- Piwik -->' . 
+					'<script type="text/javascript">' .
+					'var _paq = _paq || [];' . "\n";
+					
+			if ($this->piwik_ec_enable) {
+				$piwik_footer .= $this->setEcommerceView();
+			}
+					
+			$piwik_footer .= '_paq.push(["trackPageView"]);' .
+					'_paq.push(["enableLinkTracking"]);' . "\n";
+			
+			if ($this->piwik_proxy_enable) {
+				// Use Piwik proxy script to hide actual piwik URL.
+				$piwik_footer .= '(function() {' .
+						'var u=(("https:" == document.location.protocol) ? "' .
+						HTTPS_SERVER . '" : "' . HTTP_SERVER . '");' .
+						'_paq.push(["setTrackerUrl", u+"piwik-proxy.php"]);' .
+						'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
+						'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
+						'g.defer=true; g.async=true; g.src=u+"piwik-proxy.php"; s.parentNode.insertBefore(g,s);' .
+						'})();' .
+						'</script>' .
+						'<!-- End Piwik Code -->';
+			} else {
+				// Regular tracking
+				$piwik_footer .= '(function() {' .
+						'var u=(("https:" == document.location.protocol) ? "' .
+						$this->piwik_https_url . '" : "' . $this->piwik_http_url . '");' .
+						'_paq.push(["setTrackerUrl", u+"piwik.php"]);' .
+						'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
+						'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
+						'g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);' .
+						'})();' .
+						'</script>' .
+						'<!-- End Piwik Code -->';
+			}
 		}
 
 		return $piwik_footer;
