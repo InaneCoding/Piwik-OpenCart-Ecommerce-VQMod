@@ -16,7 +16,7 @@ class ControllerModulePiwik extends Controller {
 			$path_to_file = implode("/",explode("/", DIR_APPLICATION, -2)) . "/piwik-proxy.php";
 			if (file_exists($path_to_file)) {
 				$file_contents = file_get_contents($path_to_file);
-				$file_contents = preg_replace('/\$PIWIK_URL = \'.{1,512}?\';/', '$PIWIK_URL = \'' . $this->request->post['piwik_http_url'] . '\';', $file_contents, 1);
+				$file_contents = preg_replace('/\$PIWIK_URL = \'.{1,512}?\';/', '$PIWIK_URL = \'http://' . $this->request->post['piwik_url'] . '\';', $file_contents, 1);
 				$file_contents = preg_replace('/\$TOKEN_AUTH = \'[a-z0-9]{1,32}\';/', '$TOKEN_AUTH = \'' . $this->request->post['piwik_token_auth'] . '\';', $file_contents, 1);
 				file_put_contents($path_to_file,$file_contents);
 			}
@@ -28,8 +28,7 @@ class ControllerModulePiwik extends Controller {
 				
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		$this->data['entry_http_url'] = $this->language->get('entry_http_url');
-		$this->data['entry_https_url'] = $this->language->get('entry_https_url');
+		$this->data['entry_piwik_url'] = $this->language->get('entry_piwik_url');
 		$this->data['entry_tracker_location'] = $this->language->get('entry_tracker_location');
 		$this->data['entry_token_auth'] = $this->language->get('entry_token_auth');
 		$this->data['entry_site_id'] = $this->language->get('entry_site_id');
@@ -53,16 +52,10 @@ class ControllerModulePiwik extends Controller {
 			$this->data['error_warning'] = '';
 		}
 		
- 		if (isset($this->error['http_url'])) {
-			$this->data['error_http_url'] = $this->error['http_url'];
+ 		if (isset($this->error['piwik_url'])) {
+			$this->data['error_piwik_url'] = $this->error['piwik_url'];
 		} else {
-			$this->data['error_http_url'] = '';
-		}
-		
- 		if (isset($this->error['https_url'])) {
-			$this->data['error_https_url'] = $this->error['https_url'];
-		} else {
-			$this->data['error_https_url'] = '';
+			$this->data['error_piwik_url'] = '';
 		}
 		
  		if (isset($this->error['tracker_location'])) {
@@ -108,16 +101,19 @@ class ControllerModulePiwik extends Controller {
 		
 		$this->data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 
-		if (isset($this->request->post['piwik_http_url'])) {
-			$this->data['piwik_http_url'] = $this->request->post['piwik_http_url'];
+		if (isset($this->request->post['piwik_url'])) {
+			$this->data['piwik_url'] = $this->request->post['piwik_url'];
+		} elseif (!is_null($this->config->get('piwik_url'))) {
+			// Use 'piwik_url' config setting if it exists...
+			$this->data['piwik_url'] = $this->config->get('piwik_url');
 		} else {
-			$this->data['piwik_http_url'] = $this->config->get('piwik_http_url');
-		}	
-		
-		if (isset($this->request->post['piwik_https_url'])) {
-			$this->data['piwik_https_url'] = $this->request->post['piwik_https_url'];
-		} else {
-			$this->data['piwik_https_url'] = $this->config->get('piwik_https_url');
+			// ... or derive from 'piwik_http_url' setting if it doesn't.
+			if (substr($this->config->get('piwik_http_url'), 0, 7) == 'http://') {
+				$this->data['piwik_url'] = substr($this->config->get('piwik_http_url'), 7);
+			} else {
+				// http URL doesn't have 'http' at the front. Probably entered incorrectly. Use blank.
+				$this->data['piwik_url'] = '';
+			}
 		}	
 		
 		if (isset($this->request->post['piwik_tracker_location'])) {
@@ -175,32 +171,39 @@ class ControllerModulePiwik extends Controller {
 		$this->response->setOutput($this->render());
 	}
 	
+	// Validate the user inputs in the POST data.
 	private function validate() {
 		if (!$this->user->hasPermission('modify', 'module/piwik')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 		
-		if (empty($this->request->post['piwik_http_url'])) {
-			$this->error['http_url'] = $this->language->get('error_url');
+		// Check URL isn't empty, doesn't contain whitespace, and doesn't start with HTTP(S)://.
+		if (empty($this->request->post['piwik_url']) || preg_match("/^https?:\/\/|\s/i", $this->request->post['piwik_url'])) {
+			$this->error['piwik_url'] = $this->language->get('error_piwik_url');
+		} else {
+			// Check if URL ends with trailing slash '/' and if not, add it.
+			$this->request->post['piwik_url'] .= (substr($this->request->post['piwik_url'], -1) == '/' ? '' : '/');
+			
+			// Form HTTP and HTTPS URLs. Stored in database as two separate URLs for backwards compatibility.
+			$this->request->post['piwik_http_url'] = 'http://' . $this->request->post['piwik_url'];
+			$this->request->post['piwik_https_url'] = 'https://' . $this->request->post['piwik_url'];
 		}
+		
+		//Make sure PiwikTracker.php has uppercase 'P' and 'T'.
+		$this->request->post['piwik_tracker_location'] = str_ireplace("piwiktracker.php", "PiwikTracker.php", $this->request->post['piwik_tracker_location']);
 
-		if (empty($this->request->post['piwik_https_url'])) {
-			$this->error['https_url'] = $this->language->get('error_url');
-		}
-
-		if (empty($this->request->post['piwik_tracker_location'])) {
+		// Check URL isn't empty, doesn't contain whitespace, and does end in '/PiwikTracker.php'.
+		if (empty($this->request->post['piwik_tracker_location']) || !preg_match("/^\S{0,}\/PiwikTracker.php$/", $this->request->post['piwik_tracker_location'])) {
 			$this->error['tracker_location'] = $this->language->get('error_location');
 		}
 
 		// abcde0123456789a0b1c2d3e41234567 - example token
-		if (empty($this->request->post['piwik_token_auth']) 
-			|| !preg_match("/^[a-f0-9]{32,}$/is", $this->request->post['piwik_token_auth']))
+		if (empty($this->request->post['piwik_token_auth']) || !preg_match("/^[a-f0-9]{32,}$/is", $this->request->post['piwik_token_auth']))
 		{
 			$this->error['token'] = $this->language->get('error_token');
 		}
 		
-		if (empty($this->request->post['piwik_site_id']) 
-			|| !is_numeric($this->request->post['piwik_site_id']))
+		if (empty($this->request->post['piwik_site_id']) || !is_numeric($this->request->post['piwik_site_id']))
 		{
 			$this->error['site_id'] = $this->language->get('error_site_id');
 		}

@@ -17,20 +17,11 @@
 			<form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 				<table class="form">
 					<tr>
-						<td><span class="required">*</span> <?php echo $entry_http_url; ?></td>
+						<td><span class="required">*</span> <?php echo $entry_piwik_url; ?></td>
 						<td>
-							<input type="text" size="80" name="piwik_http_url" value="<?php echo $piwik_http_url; ?>"/>
-							<?php if ($error_http_url) { ?>
-								<span class="error"><?php echo $error_http_url; ?></span>
-							<?php } ?>
-						</td>
-					</tr>
-					<tr>
-						<td><span class="required">*</span> <?php echo $entry_https_url; ?></td>
-						<td>
-							<input type="text" size="80" name="piwik_https_url" value="<?php echo $piwik_https_url; ?>"/>
-							<?php if ($error_https_url) { ?>
-								<span class="error"><?php echo $error_https_url; ?></span>
+							<input type="text" size="80" name="piwik_url" value="<?php echo $piwik_url; ?>"/>
+							<?php if ($error_piwik_url) { ?>
+								<span class="error"><?php echo $error_piwik_url; ?></span>
 							<?php } ?>
 						</td>
 					</tr>
