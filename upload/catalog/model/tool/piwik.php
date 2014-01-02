@@ -197,9 +197,57 @@ class ModelToolPiwik extends Model {
 			}
 		}	
 	}
+
+
+
+	// Tracks a Site Search
+	// OC version  < 1.5.5 - Uses the Piwik PHP API (version not tracked automatically by Piwik).
+	// OC version >= 1.5.5 - Uses the Piwik auto detection of GET variables, and Javascript to set number of results.
+	// Called from both the javascript code and from the search results PHP page...
+	// ...then works out what to return/do based on OC version (some calls unused).
+	public function trackSiteSearch($search_keyword, $search_category_id, $search_results_total) {
 	
-	
-	
+		if (version_compare(VERSION, '1.5.5.0', '>=')) {
+			// >= 1.5.5 so use javascript method (when called from the PHP page this is then unusued)
+			if ($this->request->get['route'] == "product/search") {
+				// If on a search page, return a bit of javascript to set the number of results on piwik.
+				return "_paq.push(['setCustomUrl', document.URL + '&search_count=" . $this->session->data['last_search_total'] . "']);";
+			} else {
+				return '';
+			}
+			
+		} else {
+			// < 1.5.5 so use PHP method (only if called with correct arguments, so won't run when called from javascript).
+			// TODO - work out why PHP method doesn't currently work
+			if ($this->piwik_enable && isset($search_keyword) && isset($search_results_total)) {
+				
+				$this->init();
+				
+				// If the visitors piwik ID has been stored in the session data,
+				// Then use this info to force the visitor ID used for the piwik API call.
+				if (isset($this->session->data['piwik_visitorid'])) {
+					// Set visitor ID based on what has been previously stored
+					$this->t->setVisitorId($this->session->data['piwik_visitorid']);
+				}
+				
+				// Get the search category, if it was specified
+				if (isset($search_category_id)) {
+					$category_info = $this->model_catalog_category->getCategory($search_category_id);
+					$category_title = urldecode($category_info['name']);
+				} else {
+					$category_title = '';
+				}
+				
+				// Track the site search
+				$this->t->doTrackSiteSearch($search_keyword, $category_title, $search_results_total);
+			}
+			
+			return '';
+		}
+	}
+
+
+
 	// Tracks an order with Piwik PHP API
 	// Calls PiwikTracker 'addEcommerceItem' iteratively for each product in order
 	// Calls PiwikTracker 'doTrackEcommerceOrder' at the end to track order
@@ -307,6 +355,9 @@ class ModelToolPiwik extends Model {
 			if ($this->piwik_ec_enable) {
 				$piwik_footer .= $this->setEcommerceView();
 			}
+			
+			// Get the javascript for the number of search results
+			$piwik_footer .= $this->trackSiteSearch();
 					
 			$piwik_footer .= '_paq.push(["trackPageView"]);' .
 					'_paq.push(["enableLinkTracking"]);' . "\n";
