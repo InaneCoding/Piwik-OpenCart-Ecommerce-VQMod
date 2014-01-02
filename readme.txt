@@ -35,7 +35,7 @@ If you have used a custom install path then please place the 'PiwikTracker.php' 
 4. The default install assumes that your OpenCart Admin directory is in the '/admin/' folder at the root of your OpenCart site.
 If you have used a custom Admin path then please place all files from '/upload/admin/' to your custom OpenCart Admin folder.
 
-5. Only tested on OpenCart 1.5.3.1 & 1.5.4.1, VQmod 2.1.6 & 2.1.7, and Piwik 1.8.4, 1.9.1 & 1.11.1.
+5. Only tested on OpenCart 1.5.1.3, 1.5.3.1 & 1.5.4.1, VQmod 2.1.6 & 2.1.7, and Piwik 1.8.4, 1.9.1 & 1.11.1.
 (may well work on others - please tell me what you find out!)
 
 
@@ -55,7 +55,6 @@ f) "Piwik Tracking" - Global 'Enabled' / 'Disabled' setting for the Piwik OpenCa
 g) "Ecommerce tracking" - Set this to 'Enabled' to allow tracking of Ecommerce actions such as product views, cart operations and orders. Set this to 'Disabled' if you only wish to track regular page views.
 h) "Piwik Proxy Script" - Set this to 'Enabled' to route all Piwik tracking requests through the Piwik Proxy script at the root of your site; useful if the "Piwik Installation URL" is at another URL/server which you don't want to make public.
 i) "Piwik SKU" - Select what product field you would like to use when reporting the SKU (Stock Keeping Unit) in an Ecommerce operation. This can use either OpenCarts 'Model' product field, or the 'SKU' product field.
-
 
 
 
@@ -103,20 +102,22 @@ No admin back-end
 
 
 
-KNOWN BUGS
-----------
-No known bugs.
-
-
-
 SUPPORT
 -------
 I'm happy to help if you have any problems (though can't promise large amounts of time).
 I'm also keen to get your feedback (dont be afraid to be critical if I've done something wrong!).
 It would be great to hear of your experiences and what could be improved.
- - kevin@inanecoding.co.uk
+You can contact me using the form on http://inanecoding.co.uk/contact/
 
-If you find the mod helpful donations are of course appreciated! Paypal to st@icpla.net :)
+You can see the current bugs/features being worked on at https://github.com/InaneCoding/Piwik-OpenCart-Ecommerce-VQMod/issues
+Feel free to raise new issues if you find anything which could be improved (or even better, contribute some code!).
+
+
+
+DONATE
+------
+I DO do this in my spare time for the good of other people - I have released this mod for free in the spirit of the Open Source community, so anything you give to support me would be most appreciated and give me that little extra push to do more features and updates for you guys :)
+http://inanecoding.co.uk/donate/ :)
 
 
 
