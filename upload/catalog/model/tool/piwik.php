@@ -4,29 +4,28 @@ class ModelToolPiwik extends Model {
 	// Used to store Piwik Tracker object (don't touch!)
 	private $t;
 	
-	/* Variables temporarily defined at the top (to develop into admin backend at a later date) */
+	/* Variables defined to be used later in the code */
 	/* ---------------------------------------------------------------------------------------- */
-	private $piwik_https_url;	// Your Piwik installation URL (https).
-	private $piwik_http_url;	// Your Piwik installation URL.
-	private $piwik_site_id;	// The Site ID for your site in Piwik.
-	private $piwik_token_auth;		// Your Piwik auth token (from Piwik 'API' tab).
+	private $piwik_https_url;	// Piwik installation URL (https).
+	private $piwik_http_url;	// Piwik installation URL.
+	private $piwik_site_id;		// The Site ID for the site in Piwik.
+	private $piwik_token_auth;	// Piwik auth token (from Piwik 'API' tab).
 	private $piwik_ec_enable;	// True - to enable Ecommerce tracking.
-						// False for basic page tracking.
+								// False for basic page tracking.
 						
 	private $piwik_use_sku;		// True - Report Piwik SKU from Opencart 'SKU'.
-						// False - Report Piwik SKU from Opencart 'Model'.
+								// False - Report Piwik SKU from Opencart 'Model'.
 						
 	private $piwik_proxy_enable;		// True - to enable the use of the piwik proxy script to hide trhe piwik URL.
-					// False - for regular Piwik tracking.
+										// False - for regular Piwik tracking.
 	
-	// The full path to the PiwikTracker.php file (MUST use for Ecommerce tracking to work - get from Piwik website).
-	private $piwik_tracker_location;
+	private $piwik_tracker_location;	// The full path to the PiwikTracker.php file
 	/* ---------------------------------------------------------------------------------------- */	
 	
 
 	// Function to set various things up
-	// Not 100% certain how / where to run this, so just blanket running before each big block of API code
-	// Called internally by trackEcommerceCartUpdate and trackEcommerceOrder
+	// Not 100% certain where most efficient to run, so just blanket running before each big block of API code
+	// Called internally by other functions
 	private function init() {
 		// Load config data
 		$this->load->model('setting/setting');
