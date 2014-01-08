@@ -205,8 +205,10 @@ class ModelToolPiwik extends Model {
 	// OC version >= 1.5.5 - Uses the Piwik auto detection of GET variables, and Javascript to set number of results.
 	// Called from both the javascript code and from the search results PHP page...
 	// ...then works out what to return/do based on OC version (some calls unused).
-	public function trackSiteSearch($search_keyword, $search_category_id, $search_results_total) {
-	
+	public function trackSiteSearch($search_keyword = NULL, $search_category_id = NULL, $search_results_total = NULL) {
+		
+		$this->init();
+		
 		if (version_compare(VERSION, '1.5.5.0', '>=')) {
 			// >= 1.5.5 so use javascript method (when called from the PHP page this is then unusued)
 			if ($this->request->get['route'] == "product/search") {
@@ -221,8 +223,7 @@ class ModelToolPiwik extends Model {
 			// TODO - work out why PHP method doesn't currently work
 			if ($this->piwik_enable && isset($search_keyword) && isset($search_results_total)) {
 				
-				$this->init();
-				
+							
 				// If the visitors piwik ID has been stored in the session data,
 				// Then use this info to force the visitor ID used for the piwik API call.
 				if (isset($this->session->data['piwik_visitorid'])) {
