@@ -192,9 +192,15 @@ class ControllerModulePiwik extends Controller {
 		//Make sure PiwikTracker.php has uppercase 'P' and 'T'.
 		$this->request->post['piwik_tracker_location'] = str_ireplace("piwiktracker.php", "PiwikTracker.php", $this->request->post['piwik_tracker_location']);
 
-		// Check URL isn't empty, doesn't contain whitespace, and does end in '/PiwikTracker.php'.
-		if (empty($this->request->post['piwik_tracker_location']) || !preg_match("/^\S{0,}\/PiwikTracker.php$/", $this->request->post['piwik_tracker_location'])) {
-			$this->error['tracker_location'] = $this->language->get('error_location');
+		// Check tracker URL
+		if (!empty($this->request->post['piwik_tracker_location']) && preg_match("/^\S{0,}\/PiwikTracker.php$/", $this->request->post['piwik_tracker_location']) ) {
+			// Passes basic validity checks, check is readable
+			if (!is_readable($this->request->post['piwik_tracker_location'])) {
+				$this->error['tracker_location'] = $this->language->get('error_location_unreadable');
+			}
+		} else {
+			// Invalid - empty, contains whitespace, or doesn't end in '/PiwikTracker.php'.
+			$this->error['tracker_location'] = $this->language->get('error_location_invalid');
 		}
 
 		// abcde0123456789a0b1c2d3e41234567 - example token

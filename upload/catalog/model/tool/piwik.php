@@ -32,28 +32,32 @@ class ModelToolPiwik extends Model {
 				
 		$this->model_setting_setting->getSetting('piwik');		
 			
-		$this->piwik_http_url = $this->config->get('piwik_http_url');
-		$this->piwik_https_url = $this->config->get('piwik_https_url');
-		$this->piwik_tracker_location = $this->config->get('piwik_tracker_location');
-		$this->piwik_site_id = $this->config->get('piwik_site_id');
-		$this->piwik_token_auth = $this->config->get('piwik_token_auth');
-		$this->piwik_ec_enable = $this->config->get('piwik_ec_enable');
-		$this->piwik_proxy_enable = $this->config->get('piwik_proxy_enable');
-		$this->piwik_use_sku = $this->config->get('piwik_use_sku');
-		$this->piwik_enable = $this->config->get('piwik_enable');		
+		$this->piwik_enable = $this->config->get('piwik_enable');
 		
-		// -- Piwik Tracking API initialisation -- 
-		require_once $this->piwik_tracker_location;		// Require Piwik PHP tracking API
-		
-		$this->t = new PiwikTracker( $this->piwik_site_id, $this->piwik_http_url);
-		$this->t->setTokenAuth( $this->piwik_token_auth);
-		
-		// Get the visitor ID and store it in the session data for use later
-		$this->session->data['piwik_visitorid'] = $this->t->getVisitorId();
-		
-		$this->load->model('catalog/category');
-		$this->load->model('catalog/product');
-		$this->load->model('account/order');
+		if ($this->piwik_enable) {
+			// If mod enabled then load everything else up.
+			$this->piwik_http_url = $this->config->get('piwik_http_url');
+			$this->piwik_https_url = $this->config->get('piwik_https_url');
+			$this->piwik_tracker_location = $this->config->get('piwik_tracker_location');
+			$this->piwik_site_id = $this->config->get('piwik_site_id');
+			$this->piwik_token_auth = $this->config->get('piwik_token_auth');
+			$this->piwik_ec_enable = $this->config->get('piwik_ec_enable');
+			$this->piwik_proxy_enable = $this->config->get('piwik_proxy_enable');
+			$this->piwik_use_sku = $this->config->get('piwik_use_sku');
+					
+			// -- Piwik Tracking API initialisation -- 
+			require_once $this->piwik_tracker_location;		// Require Piwik PHP tracking API
+			
+			$this->t = new PiwikTracker( $this->piwik_site_id, $this->piwik_http_url);
+			$this->t->setTokenAuth( $this->piwik_token_auth);
+			
+			// Get the visitor ID and store it in the session data for use later
+			$this->session->data['piwik_visitorid'] = $this->t->getVisitorId();
+			
+			$this->load->model('catalog/category');
+			$this->load->model('catalog/product');
+			$this->load->model('account/order');
+		}
 	}
 	
 	
@@ -208,40 +212,43 @@ class ModelToolPiwik extends Model {
 		
 		$this->init();
 		
-		if (version_compare(VERSION, '1.5.5.0', '>=')) {
-			// >= 1.5.5 so use javascript method (when called from the PHP page this is then unusued)
-			if ($this->request->get['route'] == "product/search") {
-				// If on a search page, return a bit of javascript to set the number of results on piwik.
-				return "_paq.push(['setCustomUrl', document.URL + '&search_count=" . $this->session->data['last_search_total'] . "']);";
+		if ($this->piwik_enable) {
+			if (version_compare(VERSION, '1.5.5.0', '>=')) {
+				// >= 1.5.5 so use javascript method (when called from the PHP page this is then unusued)
+				if ($this->request->get['route'] == "product/search") {
+					// If on a search page, return a bit of javascript to set the number of results on piwik.
+					return "_paq.push(['setCustomUrl', document.URL + '&search_count=" . $this->session->data['last_search_total'] . "']);";
+				} else {
+					return '';
+				}
+				
 			} else {
+				// < 1.5.5 so use PHP method (only if called with correct arguments, so won't run when called from javascript).
+				if (isset($search_keyword) && isset($search_results_total)) {
+					
+								
+					// If the visitors piwik ID has been stored in the session data,
+					// Then use this info to force the visitor ID used for the piwik API call.
+					if (isset($this->session->data['piwik_visitorid'])) {
+						// Set visitor ID based on what has been previously stored
+						$this->t->setVisitorId($this->session->data['piwik_visitorid']);
+					}
+					
+					// Get the search category, if it was specified
+					if (isset($search_category_id)) {
+						$category_info = $this->model_catalog_category->getCategory($search_category_id);
+						$category_title = urldecode($category_info['name']);
+					} else {
+						$category_title = '';
+					}
+					
+					// Track the site search
+					$this->t->doTrackSiteSearch($search_keyword, $category_title, $search_results_total);
+				}
+				
 				return '';
 			}
-			
 		} else {
-			// < 1.5.5 so use PHP method (only if called with correct arguments, so won't run when called from javascript).
-			// TODO - work out why PHP method doesn't currently work
-			if ($this->piwik_enable && isset($search_keyword) && isset($search_results_total)) {
-				
-							
-				// If the visitors piwik ID has been stored in the session data,
-				// Then use this info to force the visitor ID used for the piwik API call.
-				if (isset($this->session->data['piwik_visitorid'])) {
-					// Set visitor ID based on what has been previously stored
-					$this->t->setVisitorId($this->session->data['piwik_visitorid']);
-				}
-				
-				// Get the search category, if it was specified
-				if (isset($search_category_id)) {
-					$category_info = $this->model_catalog_category->getCategory($search_category_id);
-					$category_title = urldecode($category_info['name']);
-				} else {
-					$category_title = '';
-				}
-				
-				// Track the site search
-				$this->t->doTrackSiteSearch($search_keyword, $category_title, $search_results_total);
-			}
-			
 			return '';
 		}
 	}
@@ -387,6 +394,8 @@ class ModelToolPiwik extends Model {
 						'</script>' .
 						'<!-- End Piwik Code -->';
 			}
+		} else {
+			$piwik_footer .= '<!-- Piwik --> Mod not enabled! Enter admin settings :) <!-- End Piwik Code -->';
 		}
 
 		return $piwik_footer;
