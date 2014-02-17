@@ -21,7 +21,8 @@ $_['entry_enable'] = 'Piwik Tracking:<br /><span class="help">Global enable/disa
 // Error
 $_['error_permission'] = 'Warning: You do not have permission to modify the Piwik OpenCart Ecommerce module!';
 $_['error_piwik_url'] = 'URL required - must not be empty, include the \'http(s)://\' at the start, or include any whitespace characters.';
-$_['error_location'] = 'Location required - must end in \'/PiwikTracker.php\' and not contain any whitespace characters.';
+$_['error_location_invalid'] = 'Location invalid - must end in \'/PiwikTracker.php\' and not contain any whitespace characters.';
+$_['error_location_unreadable'] = 'File unreadable - the path entered is not a valid readable file location.';
 $_['error_token'] = 'Invalid token - must be a 32 character alphanumeric.';
 $_['error_site_id'] = 'Invalid site ID - must be a number.';
 ?>
