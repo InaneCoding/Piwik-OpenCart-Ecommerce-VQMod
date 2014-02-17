@@ -88,6 +88,9 @@ v1.0 - 2014/02/17
 First version to be listed on opencart.com extension store (jump to v1.0).
 Order tracking now called from success page (fixes issue with order attributed to payment processor).
 Global enable/disable setting on admin page now implemented.
+New search tracking feature!
+Added checks; avoids some common admin settings errors and improves uninstall.
+Other minor changes (see github for full commit list).
 
 v0.4 - 2013/09/16
 Fixed bug 'HTTP_REFERRER' undefined index error.
