@@ -395,7 +395,7 @@ class ModelToolPiwik extends Model {
 						'<!-- End Piwik Code -->';
 			}
 		} else {
-			$piwik_footer .= '<!-- Piwik --> Mod not enabled! Enter admin settings :) <!-- End Piwik Code -->';
+			$piwik_footer .= '<!-- Piwik Mod not enabled! Enter admin settings :) End Piwik Code -->';
 		}
 
 		return $piwik_footer;
