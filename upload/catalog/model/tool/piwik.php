@@ -70,7 +70,7 @@ class ModelToolPiwik extends Model {
 		/* Get the Category info */
 		// First, check the GET variable 'path' is set
 		// Set to false - category reporting not fully supported in this version
-		if (false) {
+		if (isset($this->request->get['path']) and false) {
 			//Initialise variables etc
 			$piwik_category = '';
 		
@@ -215,7 +215,7 @@ class ModelToolPiwik extends Model {
 		if ($this->piwik_enable) {
 			if (version_compare(VERSION, '1.5.5.0', '>=')) {
 				// >= 1.5.5 so use javascript method (when called from the PHP page this is then unusued)
-				if ($this->request->get['route'] == "product/search") {
+				if (isset($this->request->get['route']) and isset($this->session->data['last_search_total']) and $this->request->get['route'] == "product/search") {
 					// If on a search page, return a bit of javascript to set the number of results on piwik.
 					return "_paq.push(['setCustomUrl', document.URL + '&search_count=" . $this->session->data['last_search_total'] . "']);";
 				} else {
@@ -224,8 +224,7 @@ class ModelToolPiwik extends Model {
 				
 			} else {
 				// < 1.5.5 so use PHP method (only if called with correct arguments, so won't run when called from javascript).
-				if (isset($search_keyword) && isset($search_results_total)) {
-					
+				if (isset($search_keyword) and isset($search_results_total)) {
 								
 					// If the visitors piwik ID has been stored in the session data,
 					// Then use this info to force the visitor ID used for the piwik API call.
@@ -234,12 +233,18 @@ class ModelToolPiwik extends Model {
 						$this->t->setVisitorId($this->session->data['piwik_visitorid']);
 					}
 					
+					//Set the default category title
+					$category_title = '';
+					
 					// Get the search category, if it was specified
 					if (isset($search_category_id)) {
+						// Get the category info from the ID
 						$category_info = $this->model_catalog_category->getCategory($search_category_id);
-						$category_title = urldecode($category_info['name']);
-					} else {
-						$category_title = '';
+						
+						if (isset($category_info['name'])) {
+							// If the name is specified then use this as for search tracking
+							$category_title = urldecode($category_info['name']);
+						}
 					}
 					
 					// Track the site search
