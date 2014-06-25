@@ -3,10 +3,18 @@ InaneCoding Piwik OpenCart Ecommerce VQmod
 ------------------------------------------------------
 Source Repository:	https://github.com/InaneCoding/Piwik-OpenCart-Ecommerce-VQMod
 Author:				Kevin Bibby / InaneCoding.co.uk
-Version:			1.0
-Release Date:		2014-02-17
+Version:			1.1
+Release Date:		2014-06-25
 License:			GNU General Public License (GPL) version 3
 ------------------------------------------------------
+
+
+
+DONATE
+------
+I DO do this in my spare time for the good of other people - I have released this mod for free in the spirit of the Open Source community, so anything you give to support me would be most appreciated and give me that little extra push to do more features and updates for you guys :)
+Please donate if you use this mod and are able to give something:
+http://inanecoding.co.uk/donate/ :)
 
 
 
@@ -17,6 +25,7 @@ Implements Piwik Ecommerce tracking for OpenCart;
 > Tracks Ecommerce product views (category views not yet implemented)
 > Tracks Ecommerce cart add/update/delete
 > Tracks Ecommerce orders
+> Tracks Site Searches
 OpenCart admin backend for modifying settings.
 Option to use Piwik Proxy Hide Url script to obfuscate the URL in the javascript code.
 Fully VQmod'ed up! Does NOT overwrite any core files.
@@ -35,7 +44,7 @@ If you have used a custom install path then please place the 'PiwikTracker.php' 
 4. The default install assumes that your OpenCart Admin directory is in the '/admin/' folder at the root of your OpenCart site.
 If you have used a custom Admin path then please place all files from '/upload/admin/' to your custom OpenCart Admin folder.
 
-5. Only tested on OpenCart 1.5.1.3, 1.5.3.1 & 1.5.4.1, VQmod 2.1.6 & 2.1.7, and Piwik 1.8.4, 1.9.1 & 1.11.1.
+5. Only tested on OpenCart 1.5.1.3, 1.5.3.1 & 1.5.4.1, 1.5.6.4 VQmod 2.1.6 & 2.1.7, and Piwik 1.12 & Piwik 2.30 (though think works down to ~1.9 ish).
 (may well work on others - please tell me what you find out!)
 
 
@@ -60,7 +69,7 @@ h) "Piwik SKU" - Select what product field you would like to use when reporting 
 UPGRADE
 -------
 To upgrade from a previous version simply upload the files from the new version as described in step 1) of the installation.
-There should be no need to re-install anything or change any settings as I've tried to pay attention to backwards compatibility during development.
+There should be no need to re-install anything else or change/restore any settings as I've tried to pay attention to backwards compatibility during development.
 Please get in touch if you experience any issues.
 
 
@@ -75,13 +84,19 @@ Some files will still remain - however these should be perfectly safe and not af
 
 LIMITATIONS
 -----------
-This is the first widespread release but would still benefit from further feedback. Please report any bugs found!
+This is one of the first widespread release but would still benefit from further feedback. Please report any bugs found!
 1) There is no functionality (yet) to track the category during page views / cart updates / orders.
+2) Some small limitations to site search; OC 1.5.5 or newer doesn't track the search category, OC older than 1.5.5 does track the category but displays site search separate to the page view in the visitor log.
 
 
 
 VERSION HISTORY
 ---------------
+
+v1.1 - 2014/06/25
+Fix error messages for undefined variables; checks GET values and other array elements are set before using.
+Fixed 'mod disabled' footer comment so it doesn't get included in visible HTML (thanks github user glennw!).
+Fixed minor error in Readme Install HTTP/HTTPS instructions.
 
 v1.0 - 2014/02/17
 First version to be listed on opencart.com extension store (jump to v1.0).
@@ -128,6 +143,7 @@ Feel free to raise new issues if you find anything which could be improved (or e
 DONATE
 ------
 I DO do this in my spare time for the good of other people - I have released this mod for free in the spirit of the Open Source community, so anything you give to support me would be most appreciated and give me that little extra push to do more features and updates for you guys :)
+Please donate if you use this mod and are able to give something:
 http://inanecoding.co.uk/donate/ :)
 
 
@@ -135,3 +151,5 @@ http://inanecoding.co.uk/donate/ :)
 WITH THANKS TO
 --------------
 Gordon Downie - for his brilliant code contribution to add the install and settings functionality to OpenCart admin.
+Github User glennw - for his bug report and fix for 'mod disabled' footer comment.
+
