@@ -67,7 +67,7 @@
 			<search position="after"><![CDATA[function index() {]]></search>
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
-		if ( isset($this->session->data['order_id']) && ( ! empty($this->session->data['order_id']))  ) {
+		if ( isset($this->session->data['order_id']) and ( ! empty($this->session->data['order_id']))  ) {
 			$this->session->data['last_order_id'] = $this->session->data['order_id'];
 			
 			$this->load->model('tool/piwik');
@@ -83,8 +83,13 @@
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
 		$this->load->model('tool/piwik');
-		$this->session->data['last_search_total'] = $product_total;
-		$this->model_tool_piwik->trackSiteSearch($filter_name, $filter_category_id, $product_total);
+		if ( isset($product_total) ) {
+			$this->session->data['last_search_total'] = $product_total;
+			
+			if ( isset($filter_name) and isset($filter_category_id) ) {
+				$this->model_tool_piwik->trackSiteSearch($filter_name, $filter_category_id, $product_total);
+			}
+		}
 		// EOF - Piwik Opencart mod
 			]]></add>
 		</operation>
