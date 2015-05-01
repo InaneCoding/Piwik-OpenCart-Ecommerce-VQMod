@@ -16,7 +16,7 @@ class ControllerModulePiwik extends Controller {
 			$path_to_file = implode("/",explode("/", DIR_APPLICATION, -2)) . "/piwik-proxy.php";
 			if (file_exists($path_to_file)) {
 				$file_contents = file_get_contents($path_to_file);
-				$file_contents = preg_replace('/\$PIWIK_URL = \'.{1,512}?\';/', '$PIWIK_URL = \'http://' . $this->request->post['piwik_url'] . '\';', $file_contents, 1);
+				$file_contents = preg_replace('/\$ANALYTICS_URL = \'.{1,512}?\';/', '$ANALYTICS_URL = \'http://' . $this->request->post['piwik_analytics_url'] . '\';', $file_contents, 1);
 				$file_contents = preg_replace('/\$TOKEN_AUTH = \'[a-z0-9]{1,32}\';/', '$TOKEN_AUTH = \'' . $this->request->post['piwik_token_auth'] . '\';', $file_contents, 1);
 				file_put_contents($path_to_file,$file_contents);
 			}
@@ -28,7 +28,7 @@ class ControllerModulePiwik extends Controller {
 				
 		$data['heading_title'] = $this->language->get('heading_title');
 
-		$data['entry_piwik_url'] = $this->language->get('entry_piwik_url');
+		$data['entry_analytics_url'] = $this->language->get('entry_analytics_url');
 		$data['entry_tracker_location'] = $this->language->get('entry_tracker_location');
 		$data['entry_token_auth'] = $this->language->get('entry_token_auth');
 		$data['entry_site_id'] = $this->language->get('entry_site_id');
@@ -36,6 +36,19 @@ class ControllerModulePiwik extends Controller {
 		$data['entry_proxy_enable'] = $this->language->get('entry_proxy_enable');		
 		$data['entry_use_sku'] = $this->language->get('entry_use_sku');
 		$data['entry_enable'] = $this->language->get('entry_enable');
+		
+		$data['help_analytics_url1'] = $this->language->get('help_analytics_url1');
+		$data['help_analytics_url2'] = $this->language->get('help_analytics_url2');
+		$data['help_tracker_location1'] = $this->language->get('help_tracker_location1');
+		$data['help_tracker_location2'] = $this->language->get('help_tracker_location2');
+		$data['help_token_auth1'] = $this->language->get('help_token_auth1');
+		$data['help_token_auth2'] = $this->language->get('help_token_auth2');
+		$data['help_site_id1'] = $this->language->get('help_site_id1');
+		$data['help_site_id2'] = $this->language->get('help_site_id2');
+		$data['help_ec_enable'] = $this->language->get('help_ec_enable');
+		$data['help_proxy_enable'] = $this->language->get('help_proxy_enable');		
+		$data['help_use_sku'] = $this->language->get('help_use_sku');
+		$data['help_enable'] = $this->language->get('help_enable');
 		
 		$data['text_enabled'] = $this->language->get('text_enabled');
 		$data['text_disabled'] = $this->language->get('text_disabled');
@@ -52,10 +65,10 @@ class ControllerModulePiwik extends Controller {
 			$data['error_warning'] = '';
 		}
 		
- 		if (isset($this->error['piwik_url'])) {
-			$data['error_piwik_url'] = $this->error['piwik_url'];
+ 		if (isset($this->error['analytics_url'])) {
+			$data['error_analytics_url'] = $this->error['analytics_url'];
 		} else {
-			$data['error_piwik_url'] = '';
+			$data['error_analytics_url'] = '';
 		}
 		
  		if (isset($this->error['tracker_location'])) {
@@ -64,10 +77,10 @@ class ControllerModulePiwik extends Controller {
 			$data['error_tracker_location'] = '';
 		}
 		
- 		if (isset($this->error['token'])) {
-			$data['error_token'] = $this->error['token'];
+ 		if (isset($this->error['token_auth'])) {
+			$data['error_token_auth'] = $this->error['token_auth'];
 		} else {
-			$data['error_token'] = '';
+			$data['error_token_auth'] = '';
 		}
 		
  		if (isset($this->error['site_id'])) {
@@ -101,18 +114,18 @@ class ControllerModulePiwik extends Controller {
 		
 		$data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 
-		if (isset($this->request->post['piwik_url'])) {
-			$data['piwik_url'] = $this->request->post['piwik_url'];
-		} elseif (!is_null($this->config->get('piwik_url'))) {
-			// Use 'piwik_url' config setting if it exists...
-			$data['piwik_url'] = $this->config->get('piwik_url');
+		if (isset($this->request->post['piwik_analytics_url'])) {
+			$data['piwik_analytics_url'] = $this->request->post['piwik_analytics_url'];
+		} elseif (!is_null($this->config->get('piwik_analytics_url'))) {
+			// Use 'piwik_analytics_url' config setting if it exists...
+			$data['piwik_analytics_url'] = $this->config->get('piwik_analytics_url');
 		} else {
-			// ... or derive from 'piwik_http_url' setting if it doesn't.
+			// ... or derive from legacy 'piwik_http_url' setting if it doesn't.
 			if (substr($this->config->get('piwik_http_url'), 0, 7) == 'http://') {
-				$data['piwik_url'] = substr($this->config->get('piwik_http_url'), 7);
+				$data['piwik_analytics_url'] = substr($this->config->get('piwik_http_url'), 7);
 			} else {
 				// http URL doesn't have 'http' at the front. Probably entered incorrectly. Use blank.
-				$data['piwik_url'] = '';
+				$data['piwik_analytics_url'] = '';
 			}
 		}	
 		
@@ -170,17 +183,17 @@ class ControllerModulePiwik extends Controller {
 		if (!$this->user->hasPermission('modify', 'module/piwik')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
-		
 		// Check URL isn't empty, doesn't contain whitespace, and doesn't start with HTTP(S)://.
-		if (empty($this->request->post['piwik_url']) || preg_match("/^https?:\/\/|\s/i", $this->request->post['piwik_url'])) {
-			$this->error['piwik_url'] = $this->language->get('error_piwik_url');
+		if (empty($this->request->post['piwik_analytics_url']) || preg_match("/^https?:\/\/|\s/i", $this->request->post['piwik_analytics_url'])) {
+			$this->error['analytics_url'] = $this->language->get('error_analytics_url');
 		} else {
 			// Check if URL ends with trailing slash '/' and if not, add it.
-			$this->request->post['piwik_url'] .= (substr($this->request->post['piwik_url'], -1) == '/' ? '' : '/');
+			$this->request->post['piwik_analytics_url'] .= (substr($this->request->post['piwik_analytics_url'], -1) == '/' ? '' : '/');
 			
-			// Form HTTP and HTTPS URLs. Stored in database as two separate URLs for backwards compatibility.
-			$this->request->post['piwik_http_url'] = 'http://' . $this->request->post['piwik_url'];
-			$this->request->post['piwik_https_url'] = 'https://' . $this->request->post['piwik_url'];
+			// Form HTTP and HTTPS URLs.
+			// Stored in database (and used in model/tool/piwik.php) as two separate URLs for backwards compatibility & ease.
+			$this->request->post['piwik_http_url'] = 'http://' . $this->request->post['piwik_analytics_url'];
+			$this->request->post['piwik_https_url'] = 'https://' . $this->request->post['piwik_analytics_url'];
 		}
 		
 		//Make sure PiwikTracker.php has uppercase 'P' and 'T'.
@@ -200,7 +213,7 @@ class ControllerModulePiwik extends Controller {
 		// abcde0123456789a0b1c2d3e41234567 - example token
 		if (empty($this->request->post['piwik_token_auth']) || !preg_match("/^[a-f0-9]{32,}$/is", $this->request->post['piwik_token_auth']))
 		{
-			$this->error['token'] = $this->language->get('error_token');
+			$this->error['token_auth'] = $this->language->get('error_token_auth');
 		}
 		
 		if (empty($this->request->post['piwik_site_id']) || !is_numeric($this->request->post['piwik_site_id']))

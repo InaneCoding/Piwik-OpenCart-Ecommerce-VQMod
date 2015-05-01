@@ -15,7 +15,7 @@
 // Edit the line below, and replace http://your-piwik-domain.example.org/piwik/
 // with your Piwik URL ending with a slash.
 // This URL will never be revealed to visitors or search engines.
-$PIWIK_URL = 'http://your-piwik-domain.example.org/piwik/';
+$ANALYTICS_URL = 'http://your-piwik-domain.example.org/piwik/';
 
 // Edit the line below, and replace xyz by the token_auth for the user "UserTrackingAPI"
 // which you created when you followed instructions above.
@@ -49,7 +49,7 @@ if (empty($_GET)) {
     } else {
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         @header('Content-Type: application/javascript; charset=UTF-8');
-        if ($piwikJs = file_get_contents($PIWIK_URL . 'piwik.js')) {
+        if ($piwikJs = file_get_contents($ANALYTICS_URL . 'piwik.js')) {
             echo $piwikJs;
         } else {
             header($_SERVER['SERVER_PROTOCOL'] . '505 Internal server error');
@@ -59,7 +59,7 @@ if (empty($_GET)) {
 }
 
 // 2) PIWIK.PHP PROXY: GET parameters found, this is a tracking request, we redirect it to Piwik
-$url = sprintf("%spiwik.php?cip=%s&token_auth=%s&", $PIWIK_URL, @$_SERVER['REMOTE_ADDR'], $TOKEN_AUTH);
+$url = sprintf("%spiwik.php?cip=%s&token_auth=%s&", $ANALYTICS_URL, @$_SERVER['REMOTE_ADDR'], $TOKEN_AUTH);
 foreach ($_GET as $key => $value) {
     $url .= $key . '=' . urlencode($value) . '&';
 }
