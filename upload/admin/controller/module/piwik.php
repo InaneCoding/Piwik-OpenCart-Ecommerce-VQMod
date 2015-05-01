@@ -23,152 +23,146 @@ class ControllerModulePiwik extends Controller {
 					
 			$this->session->data['success'] = $this->language->get('text_success');
 						
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 				
-		$this->data['heading_title'] = $this->language->get('heading_title');
+		$data['heading_title'] = $this->language->get('heading_title');
 
-		$this->data['entry_piwik_url'] = $this->language->get('entry_piwik_url');
-		$this->data['entry_tracker_location'] = $this->language->get('entry_tracker_location');
-		$this->data['entry_token_auth'] = $this->language->get('entry_token_auth');
-		$this->data['entry_site_id'] = $this->language->get('entry_site_id');
-		$this->data['entry_ec_enable'] = $this->language->get('entry_ec_enable');
-		$this->data['entry_proxy_enable'] = $this->language->get('entry_proxy_enable');		
-		$this->data['entry_use_sku'] = $this->language->get('entry_use_sku');
-		$this->data['entry_enable'] = $this->language->get('entry_enable');
+		$data['entry_piwik_url'] = $this->language->get('entry_piwik_url');
+		$data['entry_tracker_location'] = $this->language->get('entry_tracker_location');
+		$data['entry_token_auth'] = $this->language->get('entry_token_auth');
+		$data['entry_site_id'] = $this->language->get('entry_site_id');
+		$data['entry_ec_enable'] = $this->language->get('entry_ec_enable');
+		$data['entry_proxy_enable'] = $this->language->get('entry_proxy_enable');		
+		$data['entry_use_sku'] = $this->language->get('entry_use_sku');
+		$data['entry_enable'] = $this->language->get('entry_enable');
 		
-		$this->data['text_enabled'] = $this->language->get('text_enabled');
-		$this->data['text_disabled'] = $this->language->get('text_disabled');
+		$data['text_enabled'] = $this->language->get('text_enabled');
+		$data['text_disabled'] = $this->language->get('text_disabled');
 		
-		$this->data['text_sku_sku'] = $this->language->get('text_sku_sku');
-		$this->data['text_sku_model'] = $this->language->get('text_sku_model');
+		$data['text_sku_sku'] = $this->language->get('text_sku_sku');
+		$data['text_sku_model'] = $this->language->get('text_sku_model');
 		
-		$this->data['button_save'] = $this->language->get('button_save');
-		$this->data['button_cancel'] = $this->language->get('button_cancel');
+		$data['button_save'] = $this->language->get('button_save');
+		$data['button_cancel'] = $this->language->get('button_cancel');
 		
  		if (isset($this->error['warning'])) {
-			$this->data['error_warning'] = $this->error['warning'];
+			$data['error_warning'] = $this->error['warning'];
 		} else {
-			$this->data['error_warning'] = '';
+			$data['error_warning'] = '';
 		}
 		
  		if (isset($this->error['piwik_url'])) {
-			$this->data['error_piwik_url'] = $this->error['piwik_url'];
+			$data['error_piwik_url'] = $this->error['piwik_url'];
 		} else {
-			$this->data['error_piwik_url'] = '';
+			$data['error_piwik_url'] = '';
 		}
 		
  		if (isset($this->error['tracker_location'])) {
-			$this->data['error_tracker_location'] = $this->error['tracker_location'];
+			$data['error_tracker_location'] = $this->error['tracker_location'];
 		} else {
-			$this->data['error_tracker_location'] = '';
+			$data['error_tracker_location'] = '';
 		}
 		
  		if (isset($this->error['token'])) {
-			$this->data['error_token'] = $this->error['token'];
+			$data['error_token'] = $this->error['token'];
 		} else {
-			$this->data['error_token'] = '';
+			$data['error_token'] = '';
 		}
 		
  		if (isset($this->error['site_id'])) {
-			$this->data['error_site_id'] = $this->error['site_id'];
+			$data['error_site_id'] = $this->error['site_id'];
 		} else {
-			$this->data['error_site_id'] = '';
+			$data['error_site_id'] = '';
 		}
 		
 
-  		$this->data['breadcrumbs'] = array();
+  		$data['breadcrumbs'] = array();
 
-   		$this->data['breadcrumbs'][] = array(
+   		$data['breadcrumbs'][] = array(
        		'text'      => $this->language->get('text_home'),
 			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
       		'separator' => false
    		);
 
-   		$this->data['breadcrumbs'][] = array(
+   		$data['breadcrumbs'][] = array(
        		'text'      => $this->language->get('text_module'),
 			'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
       		'separator' => ' :: '
    		);
 		
-   		$this->data['breadcrumbs'][] = array(
+   		$data['breadcrumbs'][] = array(
        		'text'      => $this->language->get('heading_title'),
 			'href'      => $this->url->link('module/piwik', 'token=' . $this->session->data['token'], 'SSL'),
       		'separator' => ' :: '
    		);
 		
-		$this->data['action'] = $this->url->link('module/piwik', 'token=' . $this->session->data['token'], 'SSL');
+		$data['action'] = $this->url->link('module/piwik', 'token=' . $this->session->data['token'], 'SSL');
 		
-		$this->data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
+		$data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 
 		if (isset($this->request->post['piwik_url'])) {
-			$this->data['piwik_url'] = $this->request->post['piwik_url'];
+			$data['piwik_url'] = $this->request->post['piwik_url'];
 		} elseif (!is_null($this->config->get('piwik_url'))) {
 			// Use 'piwik_url' config setting if it exists...
-			$this->data['piwik_url'] = $this->config->get('piwik_url');
+			$data['piwik_url'] = $this->config->get('piwik_url');
 		} else {
 			// ... or derive from 'piwik_http_url' setting if it doesn't.
 			if (substr($this->config->get('piwik_http_url'), 0, 7) == 'http://') {
-				$this->data['piwik_url'] = substr($this->config->get('piwik_http_url'), 7);
+				$data['piwik_url'] = substr($this->config->get('piwik_http_url'), 7);
 			} else {
 				// http URL doesn't have 'http' at the front. Probably entered incorrectly. Use blank.
-				$this->data['piwik_url'] = '';
+				$data['piwik_url'] = '';
 			}
 		}	
 		
 		if (isset($this->request->post['piwik_tracker_location'])) {
-			$this->data['piwik_tracker_location'] = $this->request->post['piwik_tracker_location'];
+			$data['piwik_tracker_location'] = $this->request->post['piwik_tracker_location'];
 		} else {
-			$this->data['piwik_tracker_location'] = $this->config->get('piwik_tracker_location');
+			$data['piwik_tracker_location'] = $this->config->get('piwik_tracker_location');
 		}	
 		
 		if (isset($this->request->post['piwik_token_auth'])) {
-			$this->data['piwik_token_auth'] = $this->request->post['piwik_token_auth'];
+			$data['piwik_token_auth'] = $this->request->post['piwik_token_auth'];
 		} else {
-			$this->data['piwik_token_auth'] = $this->config->get('piwik_token_auth');
+			$data['piwik_token_auth'] = $this->config->get('piwik_token_auth');
 		}	
 		
 		if (isset($this->request->post['piwik_site_id'])) {
-			$this->data['piwik_site_id'] = $this->request->post['piwik_site_id'];
+			$data['piwik_site_id'] = $this->request->post['piwik_site_id'];
 		} else {
-			$this->data['piwik_site_id'] = $this->config->get('piwik_site_id');
+			$data['piwik_site_id'] = $this->config->get('piwik_site_id');
 		}	
 		
 		if (isset($this->request->post['piwik_ec_enable'])) {
-			$this->data['piwik_ec_enable'] = $this->request->post['piwik_ec_enable'];
+			$data['piwik_ec_enable'] = $this->request->post['piwik_ec_enable'];
 		} else {
-			$this->data['piwik_ec_enable'] = $this->config->get('piwik_ec_enable');
+			$data['piwik_ec_enable'] = $this->config->get('piwik_ec_enable');
 		}
 		
 		if (isset($this->request->post['piwik_proxy_enable'])) {
-			$this->data['piwik_proxy_enable'] = $this->request->post['piwik_proxy_enable'];
+			$data['piwik_proxy_enable'] = $this->request->post['piwik_proxy_enable'];
 		} else {
-			$this->data['piwik_proxy_enable'] = $this->config->get('piwik_proxy_enable');
+			$data['piwik_proxy_enable'] = $this->config->get('piwik_proxy_enable');
 		}	
 		
 		if (isset($this->request->post['piwik_use_sku'])) {
-			$this->data['piwik_use_sku'] = $this->request->post['piwik_use_sku'];
+			$data['piwik_use_sku'] = $this->request->post['piwik_use_sku'];
 		} else {
-			$this->data['piwik_use_sku'] = $this->config->get('piwik_use_sku');
+			$data['piwik_use_sku'] = $this->config->get('piwik_use_sku');
 		}	
 		
 		if (isset($this->request->post['piwik_enable'])) {
-			$this->data['piwik_enable'] = $this->request->post['piwik_enable'];
+			$data['piwik_enable'] = $this->request->post['piwik_enable'];
 		} else {
-			$this->data['piwik_enable'] = $this->config->get('piwik_enable');
+			$data['piwik_enable'] = $this->config->get('piwik_enable');
 		}	
 		
-		$this->load->model('design/layout');
-		
-		$this->data['layouts'] = $this->model_design_layout->getLayouts();
+		$data['header'] = $this->load->controller('common/header');
+		$data['column_left'] = $this->load->controller('common/column_left');
+		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->template = 'module/piwik.tpl';
-		$this->children = array(
-			'common/header',
-			'common/footer'
-		);
-				
-		$this->response->setOutput($this->render());
+		$this->response->setOutput($this->load->view('module/piwik.tpl', $data));	
 	}
 	
 	// Validate the user inputs in the POST data.
