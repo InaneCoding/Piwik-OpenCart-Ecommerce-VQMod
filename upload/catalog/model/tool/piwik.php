@@ -370,7 +370,7 @@ class ModelToolPiwik extends Model {
 			
 			// Get the javascript for the number of search results
 			$piwik_footer .= $this->trackSiteSearch();
-					
+  
 			$piwik_footer .= '_paq.push(["trackPageView"]);' .
 					'_paq.push(["enableLinkTracking"]);' . "\n";
 			
@@ -394,7 +394,7 @@ class ModelToolPiwik extends Model {
 						'_paq.push(["setTrackerUrl", u+"piwik.php"]);' .
 						'_paq.push(["setSiteId", "' . (int)$this->piwik_site_id . '"]);' .
 						'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";' .
-						'g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);' .
+						' g.async=true; g.defer=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);' .
 						'})();' .
 						'</script>' .
 						'<!-- End Piwik Code -->';
