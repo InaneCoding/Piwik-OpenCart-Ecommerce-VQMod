@@ -88,7 +88,7 @@ VERSION HISTORY
 ---------------
 
 v2.0 - 2015/05/03
-Provide compatibility for OC2.x
+Provide compatibility for OC2.x , no longer supports OC1.x (jump to v2.0)
 Update piwik proxy & piwiktracker file to latest
 
 v1.1 - 2014/06/25
