@@ -8,7 +8,7 @@
 			<search position="before"><![CDATA[$data['powered']]]></search>
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
-		$this->load->model('tool/piwik');
+		$this->load->model('extension/analytics/piwik');
 		$data['piwik_footer_text'] = $this->model_tool_piwik->getFooterText();
 		// EOF - Piwik Opencart mod
 			]]></add>
@@ -27,7 +27,7 @@
 			<search position="after"><![CDATA[$this->cart->remove(]]></search>
 			<add><![CDATA[
 			// BOF - Piwik Opencart mod
-			$this->load->model('tool/piwik');
+			$this->load->model('extension/analytics/piwik');
 			$this->model_tool_piwik->trackEcommerceCartUpdate();
 			// EOF - Piwik Opencart mod
 			]]></add>
@@ -36,7 +36,7 @@
 			<search position="after"><![CDATA[$this->cart->update(]]></search>
 			<add><![CDATA[
 			// BOF - Piwik Opencart mod
-			$this->load->model('tool/piwik');
+			$this->load->model('extension/analytics/piwik');
 			$this->model_tool_piwik->trackEcommerceCartUpdate();
 			// EOF - Piwik Opencart mod
 			]]></add>
@@ -45,7 +45,7 @@
 			<search position="after"><![CDATA[$this->cart->add(]]></search>
 			<add><![CDATA[
 				// BOF - Piwik Opencart mod
-				$this->load->model('tool/piwik');
+				$this->load->model('extension/analytics/piwik');
 				$this->model_tool_piwik->trackEcommerceCartUpdate();
 				// EOF - Piwik Opencart mod
 			]]></add>
@@ -59,7 +59,7 @@
 		if ( isset($this->session->data['order_id']) and ( ! empty($this->session->data['order_id']))  ) {
 			$this->session->data['last_order_id'] = $this->session->data['order_id'];
 			
-			$this->load->model('tool/piwik');
+			$this->load->model('extension/analytics/piwik');
 			$this->model_tool_piwik->trackEcommerceOrder($this->session->data['last_order_id']);
 		}
 		// EOF - Piwik Opencart mod
@@ -71,7 +71,7 @@
 			<search position="before"><![CDATA[$this->response->setOutput(]]></search>
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
-		$this->load->model('tool/piwik');
+		$this->load->model('extension/analytics/piwik');
 		if ( isset($product_total) ) {
 			$this->session->data['last_search_total'] = $product_total;
 			
