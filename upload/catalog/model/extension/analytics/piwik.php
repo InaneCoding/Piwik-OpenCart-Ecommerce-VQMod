@@ -1,6 +1,6 @@
 <?php
 
-class ModelToolPiwik extends Model {
+class ModelExtensionAnalyticsPiwik extends Model {
 	// Used to store Piwik Tracker object (don't touch!)
 	private $t;
 	

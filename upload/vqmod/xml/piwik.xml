@@ -9,7 +9,7 @@
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
 		$this->load->model('extension/analytics/piwik');
-		$data['piwik_footer_text'] = $this->model_tool_piwik->getFooterText();
+		$data['piwik_footer_text'] = $this->model_extension_analytics_piwik->getFooterText();
 		// EOF - Piwik Opencart mod
 			]]></add>
 		</operation>
@@ -28,7 +28,7 @@
 			<add><![CDATA[
 			// BOF - Piwik Opencart mod
 			$this->load->model('extension/analytics/piwik');
-			$this->model_tool_piwik->trackEcommerceCartUpdate();
+			$this->model_extension_analytics_piwik->trackEcommerceCartUpdate();
 			// EOF - Piwik Opencart mod
 			]]></add>
 		</operation>
@@ -37,7 +37,7 @@
 			<add><![CDATA[
 			// BOF - Piwik Opencart mod
 			$this->load->model('extension/analytics/piwik');
-			$this->model_tool_piwik->trackEcommerceCartUpdate();
+			$this->model_extension_analytics_piwik->trackEcommerceCartUpdate();
 			// EOF - Piwik Opencart mod
 			]]></add>
 		</operation>
@@ -46,7 +46,7 @@
 			<add><![CDATA[
 				// BOF - Piwik Opencart mod
 				$this->load->model('extension/analytics/piwik');
-				$this->model_tool_piwik->trackEcommerceCartUpdate();
+				$this->model_extension_analytics_piwik->trackEcommerceCartUpdate();
 				// EOF - Piwik Opencart mod
 			]]></add>
 		</operation>
@@ -60,7 +60,7 @@
 			$this->session->data['last_order_id'] = $this->session->data['order_id'];
 			
 			$this->load->model('extension/analytics/piwik');
-			$this->model_tool_piwik->trackEcommerceOrder($this->session->data['last_order_id']);
+			$this->model_extension_analytics_piwik->trackEcommerceOrder($this->session->data['last_order_id']);
 		}
 		// EOF - Piwik Opencart mod
 			]]></add>
@@ -76,7 +76,7 @@
 			$this->session->data['last_search_total'] = $product_total;
 			
 			if ( isset($filter_name) and isset($filter_category_id) ) {
-				$this->model_tool_piwik->trackSiteSearch($filter_name, $filter_category_id, $product_total);
+				$this->model_extension_analytics_piwik->trackSiteSearch($filter_name, $filter_category_id, $product_total);
 			}
 		}
 		// EOF - Piwik Opencart mod

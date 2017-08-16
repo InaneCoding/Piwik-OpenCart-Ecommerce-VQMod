@@ -1,5 +1,5 @@
 <?php
-class ControllerModulePiwik extends Controller {
+class ControllerExtensionAnalyticsPiwik extends Controller {
 	private $error = array(); 
 	
 	public function index() {   
@@ -191,7 +191,7 @@ class ControllerModulePiwik extends Controller {
 			$this->request->post['piwik_analytics_url'] .= (substr($this->request->post['piwik_analytics_url'], -1) == '/' ? '' : '/');
 			
 			// Form HTTP and HTTPS URLs.
-			// Stored in database (and used in model/tool/piwik.php) as two separate URLs for backwards compatibility & ease.
+			// Stored in database (and used in model/extension/analytics/piwik.php) as two separate URLs for backwards compatibility & ease.
 			$this->request->post['piwik_http_url'] = 'http://' . $this->request->post['piwik_analytics_url'];
 			$this->request->post['piwik_https_url'] = 'https://' . $this->request->post['piwik_analytics_url'];
 		}
