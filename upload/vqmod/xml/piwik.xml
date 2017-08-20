@@ -68,16 +68,28 @@
 	</file>
 	<file path="catalog/controller/product/" name="search.php">
 		<operation>
-			<search position="before"><![CDATA[$this->response->setOutput(]]></search>
+			<search position="before"><![CDATA[$this->load->controller('common/footer]]></search>
 			<add><![CDATA[
 		// BOF - Piwik Opencart mod
-		$this->load->model('extension/analytics/piwik');
+		
+		// Save stuff in session data so Piwik javascript [loaded in footer, later in page execution] knows info for search results
+		// I'm sure there is a better way of doing this in MVC parlance; should improve later once I understand how!
 		if ( isset($product_total) ) {
 			$this->session->data['last_search_total'] = $product_total;
-			
-			if ( isset($filter_name) and isset($filter_category_id) ) {
-				$this->model_extension_analytics_piwik->trackSiteSearch($filter_name, $filter_category_id, $product_total);
-			}
+		} else {
+			unset($this->session->data['last_search_total']);
+		}
+
+		if ( isset($category_id) ) {
+			$this->session->data['last_search_category_id'] = $category_id;
+		} else {
+			unset($this->session->data['last_search_category_id']);
+		}
+		
+		if ( isset($search) ) {
+			$this->session->data['last_search_keyword'] = $search;
+		} else {
+			unset($this->session->data['last_search_keyword']);
 		}
 		// EOF - Piwik Opencart mod
 			]]></add>

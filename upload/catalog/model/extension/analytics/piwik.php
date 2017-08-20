@@ -200,59 +200,57 @@ class ModelExtensionAnalyticsPiwik extends Model {
 			}
 		}	
 	}
-
-
-
-	// Tracks a Site Search
-	// OC version  < 1.5.5 - Uses the Piwik PHP API (version not tracked automatically by Piwik).
-	// OC version >= 1.5.5 - Uses the Piwik auto detection of GET variables, and Javascript to set number of results.
-	// Called from both the javascript code and from the search results PHP page...
-	// ...then works out what to return/do based on OC version (some calls unused).
-	public function trackSiteSearch($search_keyword = NULL, $search_category_id = NULL, $search_results_total = NULL) {
+		
+		
+	// Generates the Site Search javascript code (or returns normal Page View javascript if not a site search)
+	// Now entirely uses javascript to track searches, and sets search info explicitly rather than relying on Piwiks auto-detection of search GET variables.
+	// Called by getFooterText() which adds the footer javascript code. Detects if loaded page is a search page and returns appropriate javascript code.
+	public function trackSiteSearch() {
 		
 		$this->init();
 		
 		if ($this->piwik_enable) {
-			if (version_compare(VERSION, '1.5.5.0', '>=')) {
-				// >= 1.5.5 so use javascript method (when called from the PHP page this is then unusued)
-				if (isset($this->request->get['route']) and isset($this->session->data['last_search_total']) and $this->request->get['route'] == "product/search") {
-					// If on a search page, return a bit of javascript to set the number of results on piwik.
-					return "_paq.push(['setCustomUrl', document.URL + '&search_count=" . $this->session->data['last_search_total'] . "']);";
-				} else {
-					return '';
-				}
-				
-			} else {
-				// < 1.5.5 so use PHP method (only if called with correct arguments, so won't run when called from javascript).
-				if (isset($search_keyword) and isset($search_results_total)) {
-								
-					// If the visitors piwik ID has been stored in the session data,
-					// Then use this info to force the visitor ID used for the piwik API call.
-					if (isset($this->session->data['piwik_visitorid'])) {
-						// Set visitor ID based on what has been previously stored
-						$this->t->setVisitorId($this->session->data['piwik_visitorid']);
-					}
-					
-					//Set the default category title
-					$category_title = '';
-					
+				if (isset($this->request->get['route']) and $this->request->get['route'] == "product/search" and isset($this->session->data['last_search_keyword'])) {				
 					// Get the search category, if it was specified
-					if (isset($search_category_id)) {
+					if (isset($this->session->data['last_search_category_id'])) {
 						// Get the category info from the ID
-						$category_info = $this->model_catalog_category->getCategory($search_category_id);
+						$category_info = $this->model_catalog_category->getCategory($this->session->data['last_search_category_id']);
 						
 						if (isset($category_info['name'])) {
 							// If the name is specified then use this as for search tracking
-							$category_title = urldecode($category_info['name']);
+							$search_category_title = '"' . urldecode($category_info['name']) . '"';
+						} else {
+							$search_category_title = 'false';
 						}
+					} else {
+						$search_category_title = 'false';
+					}
+
+					// Get the search total, if it was specified
+					if (isset($this->session->data['last_search_total'])) {
+						$search_total = $this->session->data['last_search_total'];
+					} else {
+						$search_total = 'false';
 					}
 					
-					// Track the site search
-					$this->t->doTrackSiteSearch($search_keyword, $category_title, $search_results_total);
+					$search_keyword = '"' . $this->session->data['last_search_keyword'] . '"';
+					
+					// Unset temp session variables used for search info
+					unset($this->session->data['last_search_total']);
+					unset($this->session->data['last_search_category_id']);
+					unset($this->session->data['last_search_keyword']);					
+					
+					// On a search page, so return a bit of javascript to set the search result info in piwik.
+					return '_paq.push(["trackSiteSearch",' . 
+						$search_keyword . ',' . 
+						$search_category_title . ',' .
+						$search_total . ']);';
+
+					//?? unset($this->session->data['last_search_total'])	//unset so javascript doesn't add search term, use PHP for category tracking				
+				} else {
+					// Not a site search results page - return javascript for a normal page view
+					return '_paq.push(["trackPageView"]);';
 				}
-				
-				return '';
-			}
 		} else {
 			return '';
 		}
@@ -367,12 +365,12 @@ class ModelExtensionAnalyticsPiwik extends Model {
 			if ($this->piwik_ec_enable) {
 				$piwik_footer .= $this->setEcommerceView();
 			}
-			
-			// Get the javascript for the number of search results
+	
+			// Get the javascript for the search results
+			// If not on a search results page this will return the javascript for a standard page view
 			$piwik_footer .= $this->trackSiteSearch();
-  
-			$piwik_footer .= '_paq.push(["trackPageView"]);' .
-					'_paq.push(["enableLinkTracking"]);' . "\n";
+			
+			$piwik_footer .= '_paq.push(["enableLinkTracking"]);' . "\n";
 			
 			if ($this->piwik_proxy_enable) {
 				// Use Piwik proxy script to hide actual piwik URL.
