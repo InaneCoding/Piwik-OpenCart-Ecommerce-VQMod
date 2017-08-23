@@ -37,6 +37,9 @@
 							<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
 						<?php } ?>
 					</select>
+					<?php if ($error_tracker_location) { ?>
+						<div class="text-danger"><?php echo $error_tracker_location; ?></div>
+					<?php } ?>
 				</div>
 			</div>
 			<div class="form-group required">
@@ -45,15 +48,6 @@
 					<input type="text" name="piwik_analytics_url" value="<?php echo $piwik_analytics_url; ?>" placeholder="<?php echo $help_analytics_url2; ?>" id="entry-analytics_url" class="form-control"/>
 					<?php if ($error_analytics_url) { ?>
 						<div class="text-danger"><?php echo $error_analytics_url; ?></div>
-					<?php } ?>
-				</div>
-			</div>
-			<div class="form-group required">
-				<label class="col-sm-2 control-label" for="entry-tracker_location"><span data-toggle="tooltip" title="<?php echo $help_tracker_location1; ?>"><?php echo $entry_tracker_location; ?></span></label>
-				<div class="col-sm-10">
-					<input type="text" name="piwik_tracker_location" value="<?php echo $piwik_tracker_location; ?>" placeholder="<?php echo $help_tracker_location2; ?>" id="entry-tracker_location" class="form-control"/>
-					<?php if ($error_tracker_location) { ?>
-						<div class="text-danger"><?php echo $error_tracker_location; ?></div>
 					<?php } ?>
 				</div>
 			</div>
@@ -101,6 +95,9 @@
 							<option value="0" selected="selected"><?php echo $text_disabled; ?></option>
 						<?php } ?>
 					</select>
+					<?php if ($error_proxy_unreadable) { ?>
+						<div class="text-danger"><?php echo $error_proxy_unreadable; ?></div>
+					<?php } ?>
 				</div>
 			</div>
 			<div class="form-group">

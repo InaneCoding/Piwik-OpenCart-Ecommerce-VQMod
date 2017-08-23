@@ -11,15 +11,6 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 				
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$this->model_setting_setting->editSetting('piwik', $this->request->post);		
-			
-			//Write the settings to the piwik-proxy file
-			$path_to_file = implode("/",explode("/", DIR_APPLICATION, -2)) . "/piwik-proxy.php";
-			if (file_exists($path_to_file)) {
-				$file_contents = file_get_contents($path_to_file);
-				$file_contents = preg_replace('/\$PIWIK_URL = \'.{1,512}?\';/', '$PIWIK_URL = \'http://' . $this->request->post['piwik_analytics_url'] . '\';', $file_contents, 1);
-				$file_contents = preg_replace('/\$TOKEN_AUTH = \'[a-z0-9]{1,32}\';/', '$TOKEN_AUTH = \'' . $this->request->post['piwik_token_auth'] . '\';', $file_contents, 1);
-				file_put_contents($path_to_file,$file_contents);
-			}
 					
 			$this->session->data['success'] = $this->language->get('text_success');
 						
@@ -29,7 +20,6 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 		$data['heading_title'] = $this->language->get('heading_title');
 
 		$data['entry_analytics_url'] = $this->language->get('entry_analytics_url');
-		$data['entry_tracker_location'] = $this->language->get('entry_tracker_location');
 		$data['entry_token_auth'] = $this->language->get('entry_token_auth');
 		$data['entry_site_id'] = $this->language->get('entry_site_id');
 		$data['entry_ec_enable'] = $this->language->get('entry_ec_enable');
@@ -39,8 +29,6 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 		
 		$data['help_analytics_url1'] = $this->language->get('help_analytics_url1');
 		$data['help_analytics_url2'] = $this->language->get('help_analytics_url2');
-		$data['help_tracker_location1'] = $this->language->get('help_tracker_location1');
-		$data['help_tracker_location2'] = $this->language->get('help_tracker_location2');
 		$data['help_token_auth1'] = $this->language->get('help_token_auth1');
 		$data['help_token_auth2'] = $this->language->get('help_token_auth2');
 		$data['help_site_id1'] = $this->language->get('help_site_id1');
@@ -89,6 +77,11 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 			$data['error_site_id'] = '';
 		}
 		
+ 		if (isset($this->error['proxy_unreadable'])) {
+			$data['error_proxy_unreadable'] = $this->error['proxy_unreadable'];
+		} else {
+			$data['error_proxy_unreadable'] = '';
+		}
 
   		$data['breadcrumbs'] = array();
 
@@ -127,12 +120,6 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 				// http URL doesn't have 'http' at the front. Probably entered incorrectly. Use blank.
 				$data['piwik_analytics_url'] = '';
 			}
-		}	
-		
-		if (isset($this->request->post['piwik_tracker_location'])) {
-			$data['piwik_tracker_location'] = $this->request->post['piwik_tracker_location'];
-		} else {
-			$data['piwik_tracker_location'] = $this->config->get('piwik_tracker_location');
 		}	
 		
 		if (isset($this->request->post['piwik_token_auth'])) {
@@ -177,12 +164,14 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 
 		$this->response->setOutput($this->load->view('extension/analytics/piwik.tpl', $data));	
 	}
+
 	
 	// Validate the user inputs in the POST data.
 	private function validate() {
 		if (!$this->user->hasPermission('modify', 'extension/analytics/piwik')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
+		
 		// Check URL isn't empty, doesn't contain whitespace, and doesn't start with HTTP(S)://.
 		if (empty($this->request->post['piwik_analytics_url']) || preg_match("/^https?:\/\/|\s/i", $this->request->post['piwik_analytics_url'])) {
 			$this->error['analytics_url'] = $this->language->get('error_analytics_url');
@@ -195,30 +184,46 @@ class ControllerExtensionAnalyticsPiwik extends Controller {
 			$this->request->post['piwik_http_url'] = 'http://' . $this->request->post['piwik_analytics_url'];
 			$this->request->post['piwik_https_url'] = 'https://' . $this->request->post['piwik_analytics_url'];
 		}
-		
-		//Make sure PiwikTracker.php has uppercase 'P' and 'T'.
-		$this->request->post['piwik_tracker_location'] = str_ireplace("piwiktracker.php", "PiwikTracker.php", $this->request->post['piwik_tracker_location']);
 
-		// Check tracker URL
-		if (!empty($this->request->post['piwik_tracker_location']) && preg_match("/^\S{0,}\/PiwikTracker.php$/", $this->request->post['piwik_tracker_location']) ) {
-			// Passes basic validity checks, check is readable
-			if (!is_readable($this->request->post['piwik_tracker_location'])) {
-				$this->error['tracker_location'] = $this->language->get('error_location_unreadable');
-			}
-		} else {
-			// Invalid - empty, contains whitespace, or doesn't end in '/PiwikTracker.php'.
-			$this->error['tracker_location'] = $this->language->get('error_location_invalid');
-		}
-
-		// abcde0123456789a0b1c2d3e41234567 - example token
+		// abcde0123456789a0b1c2d3e41234567 - example token. Validate token is 32digit hex/dumeric.
 		if (empty($this->request->post['piwik_token_auth']) || !preg_match("/^[a-f0-9]{32,}$/is", $this->request->post['piwik_token_auth']))
 		{
 			$this->error['token_auth'] = $this->language->get('error_token_auth');
 		}
 		
+		// Validate site ID is numeric
 		if (empty($this->request->post['piwik_site_id']) || !is_numeric($this->request->post['piwik_site_id']))
 		{
 			$this->error['site_id'] = $this->language->get('error_site_id');
+		}
+		
+		// Validate the piwik-proxy.php file can be written to. Then write the settings to the piwik-proxy file.
+		// Only do if no error so far (url & token will be valid) and piwik proxy is enabled.
+		if (!$this->error && isset($this->request->post['piwik_proxy_enable']) && $this->request->post['piwik_proxy_enable']) {
+			$path_to_file = implode("/",explode("/", DIR_APPLICATION, -2)) . "/piwik-proxy.php";	// Work out location, should be in root OC directory.
+			if (is_writable($path_to_file) && is_readable($path_to_file)) {
+				$file_contents = file_get_contents($path_to_file);
+				$file_contents = preg_replace('/\$PIWIK_URL = \'.{1,512}?\';/', '$PIWIK_URL = \'http://' . $this->request->post['piwik_analytics_url'] . '\';', $file_contents, 1);
+				$file_contents = preg_replace('/\$TOKEN_AUTH = \'[a-z0-9]{1,32}\';/', '$TOKEN_AUTH = \'' . $this->request->post['piwik_token_auth'] . '\';', $file_contents, 1);
+				file_put_contents($path_to_file,$file_contents);
+			} else {
+				// Can't read/write to file, show error.
+				$this->error['proxy_unreadable'] = $this->language->get('error_proxy_unreadable');
+			}
+			
+		}
+		
+		// Validate the PiwikTracker.php file can be read (only if module enabled)
+		if (isset($this->request->post['piwik_enable']) && $this->request->post['piwik_enable']) {
+			$path_to_file = implode("/",explode("/", DIR_APPLICATION, -2)) . "/PiwikTracker.php";	// Work out location, should be in root OC directory after install.
+			
+			if (is_readable($path_to_file)) {
+				$this->request->post['piwik_tracker_location'] = $path_to_file;
+			} else {
+				// Can't read file, show error.
+				unset($this->request->post['piwik_tracker_location']);
+				$this->error['tracker_location'] = $this->language->get('error_tracker_location');
+			}
 		}
 		
 		if (!$this->error) {
