@@ -1,4 +1,11 @@
 ------------------------------------------------------
+NOTE: This legacy extension has now been superseded by the latest version 'Matomo eCommerce Analytics PRO' for Opencart:
+http://inanecoding.co.uk/matomo-ecommerce-analytics-pro-opencart/
+https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38622
+------------------------------------------------------
+
+
+------------------------------------------------------
 InaneCoding Piwik OpenCart Ecommerce VQmod
 ------------------------------------------------------
 Source Repository:	https://github.com/InaneCoding/Piwik-OpenCart-Ecommerce-VQMod
